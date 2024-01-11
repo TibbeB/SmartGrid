@@ -1,5 +1,6 @@
 from battery import Battery
 from house import House
+from cable import Cable
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,6 +15,7 @@ class Smartgrid():
         
         self.batteries = {}
         self.houses = {}
+        self.cables = {}
         
         filename_batteries = f"Huizen&Batterijen/district_{district}/district-{district}_batteries.csv"
         filename_houses = f"Huizen&Batterijen//district_{district}/district-{district}_houses.csv"
@@ -35,6 +37,8 @@ class Smartgrid():
                 x = coordinates[0]
                 y = coordinates[1]
                 capacity = line[1]
+                
+                # create battery object
                 self.batteries[battery_id] = Battery(battery_id, int(x), int(y), float(capacity))
                 battery_id += 1
         
@@ -47,7 +51,13 @@ class Smartgrid():
                 x = line[0]
                 y = line[1]
                 capacity = line[2]
+                
+                # create house object
                 self.houses[house_id] = House(battery_id, int(x), int(y), float(capacity))
+                
+                # create cable object
+                self.cables[house_id] = Cable(self.houses[house_id])
+                
                 house_id += 1
                 
     def extract_cords_and_capacity(self, dictionary):
