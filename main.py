@@ -20,11 +20,12 @@ class Smartgrid():
         
         self.csv_reader(filename_batteries, filename_houses)
         
-        self.visualisation()
+        self.visualisation(self.batteries, self.houses)
     
     def csv_reader(self, filename_batteries, filename_houses):
-        """ initializes objecten met csv data"""
-    
+        """ initialize objects with csv data"""
+        
+        # read batteries
         with open(filename_batteries, 'r') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
@@ -36,7 +37,8 @@ class Smartgrid():
                 capacity = line[1]
                 self.batteries[battery_id] = Battery(battery_id, int(x), int(y), float(capacity))
                 battery_id += 1
-                    
+        
+        # read houses
         with open(filename_houses, 'r') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)
@@ -49,37 +51,66 @@ class Smartgrid():
                 house_id += 1
                 
     def extract_cords_and_capacity(self, dictionary):
-        """ extracts cords and capacity from house or battery objects"""
+        """ extracts cords, capacities and key names from objects in house and battery dicts"""
+        
+        # create lists
         x_list = []
         y_list = []
         capacity_list = []
+        key_list = []
         
+        # loop trough objects in dict
         for key, value in dictionary.items():
+        
+            # return values from objects
             x = value.x
             y = value.y
             capacity = value.capacity
             
+            # append values to lists
             x_list.append(x)
             y_list.append(y)
             capacity_list.append(capacity)
+            key_list.append(key)
+            
         
-        return x_list, y_list, capacity_list
+        return x_list, y_list, capacity_list, key_list
                 
-    def visualisation(self):
+    def visualisation(self, batteries_dict, houses_dict):
         """ creates a scatter plot with extracted cords and capacity"""
         
-        self.batteries_lijst = self.extract_cords_and_capacity(self.batteries)
-        self.houses_lijst = self.extract_cords_and_capacity(self.houses)
+        # extract cords, capacities and key names of objects in house and battery dict
+        batteries_list = self.extract_cords_and_capacity(batteries_dict)
+        houses_list = self.extract_cords_and_capacity(houses_dict)
         
-        x_batteries = self.batteries_lijst[0]
-        y_batteries = self.batteries_lijst[1]
+        # save battery cords and capacity in vars
+        x_batteries = batteries_list[0]
+        y_batteries = batteries_list[1]
+        capacity_batteries = batteries_list[2]
         
-        x_houses = self.houses_lijst[0]
-        y_houses = self.houses_lijst[1]
+        # save house cords and capacity in vars
+        x_houses = houses_list[0]
+        y_houses = houses_list[1]
+        capacity_houses = houses_list[2]
         
-        plt.scatter(x_batteries, y_batteries)
-        plt.scatter(x_houses, y_houses)
+        # create scatter plot
+        scatter1 = plt.scatter(x_batteries, y_batteries, c=capacity_batteries, s=400, cmap='Blues', edgecolors='black')
+        scatter2 = plt.scatter(x_houses, y_houses, c=capacity_houses, s=200, cmap='hot', edgecolors='grey')
         
+        # add colorbar
+        plt.colorbar(scatter1, label="Capacity batteries")
+        plt.colorbar(scatter2, label="Capacity houses")
+        
+        # label x and y axis
+        plt.xlabel('X-axis')
+        plt.ylabel('Y-axis')
+        
+        # add key names to batteries
+        for i, key in enumerate(batteries_list[3]):
+            plt.annotate(f'({key})', (x_batteries[i], y_batteries[i]),
+            textcoords="offset points", xytext=(0, 15), ha='center', fontsize=14, fontweight='bold')
+        
+        # create grid and show plot
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
         plt.show()
             
