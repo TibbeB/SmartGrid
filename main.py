@@ -1,13 +1,13 @@
 from battery import Battery
 from house import House
 from cable import Cable
-from first_fit_decreasing_algorithm import even_distribution
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter
 import matplotlib
 import json
+import numpy as np
 matplotlib.use('TkAgg')
 
 
@@ -55,11 +55,14 @@ class Smartgrid():
                 capacity = line[2]
                 
                 # create house object
-                self.houses[house_id] = House(battery_id, int(x), int(y), float(capacity))
+                self.houses[house_id] = House(house_id, int(x), int(y), float(capacity))
                 
                 # create cable object
                 self.cables[house_id] = Cable(self.houses[house_id])
                 
+                # print(self.cables[house_id].x)
+                # print(self.houses[house_id].x)
+
                 house_id += 1
                 
     def extract_cords_and_capacity(self, dictionary):
@@ -108,6 +111,17 @@ class Smartgrid():
         # create scatter plot
         scatter1 = plt.scatter(x_batteries, y_batteries, c=capacity_batteries, s=400, cmap='Blues', edgecolors='black')
         scatter2 = plt.scatter(x_houses, y_houses, c=capacity_houses, s=200, cmap='hot', edgecolors='grey')
+
+        # draw cables
+        for key, cable in self.cables.items():
+            x = []
+            y = []
+
+            for coordinate in cable.path:
+                x.append(coordinate[0])
+                y.append(coordinate[1])
+
+            plt.plot(x, y, color = 'b')
         
         # add colorbar
         plt.colorbar(scatter1, label="Capacity batteries")
@@ -125,6 +139,40 @@ class Smartgrid():
         # create grid and show plot
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
         plt.show()
+
+    def even_distribution(self, batteries, houses):
+        """ Evenly distributes the max outputs of the houses over the batteries
+        
+        pre: batteries must be a dict, houses must be a dict
+
+        post: returns a dict or 1 if a max capacity is exceeded"""
+
+        connections = {}
+
+        # making list of houses sorted from large to small max outputs
+        house_objects = []
+        for key, value in houses.items():
+            house_objects.append(value)
+
+        house_objects.sort(key=lambda x: x.capacity)
+        reverse = house_objects[::-1]
+        
+        # setting keys in connection to batteries
+        for i in range(len(batteries)):
+            connections[batteries[i]] = []
+
+        # Destributing the houses max outputs evenly over the batteries
+        # using the "First Fit Decreasing" algorithm 
+        battery_sums = [0 for i in range(len(batteries))]
+        for j in reverse:
+            output_house = j.capacity
+            battery_sums[np.argmin(battery_sums)] += output_house
+            connections[batteries[np.argmin(battery_sums)]].append(j)
+
+        if battery_sums[np.argmax(battery_sums)] > 1506:
+            return 1
+
+        return connections
 
     def x_y_path(self, dict_connections):
 
@@ -154,14 +202,14 @@ class Smartgrid():
                     else:
                         cable.right()
                 
-                    # iterates trough all steps from the house to the battery
-                    # determines up or down
-                    for y_steps in range(abs(y_distance)):
-                        if y_distance < 0:
-                            cable.down()
-                            
-                        else:
-                            cable.up()
+                # iterates trough all steps from the house to the battery
+                # determines up or down
+                for y_steps in range(abs(y_distance)):
+                    if y_distance < 0:
+                        cable.down()
+                        
+                    else:
+                        cable.up()
     
     def cost_shared(self, dictionary):
         total_cost = 0
@@ -218,16 +266,17 @@ if __name__ == "__main__":
 
     # distributing the houses evenly over the batteries
     batteries, houses = smartgrid.get_data()
-    distribtion = even_distribution(batteries, houses)
+    distribtion = smartgrid.even_distribution(batteries, houses)
 
     # laying the cables
     smartgrid.x_y_path(distribtion)
 
     # calculating the total cost
-    # costs = smartgrid.cost_shared(distribtion)
-    print(smartgrid.cables[2].path)
+    costs = smartgrid.cost_shared(distribtion)
 
     # generating json output file
-    # smartgrid.json_writer(district, costs, distribtion)
+    smartgrid.json_writer(district, costs, distribtion)
+
+    smartgrid.visualisation(batteries, houses)
 
     
