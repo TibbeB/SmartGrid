@@ -24,7 +24,7 @@ def json_writer(self, district, cost_shared, dictionary, cables_dict):
                 string_path_cords.append(string)
             
             # create house_entry
-            house_entry = {"location": f"{house.x, house.y}", "output": house.capacity, "cables": f"{x_path},{y_path}"}
+            house_entry = {"location": f"{house.x, house.y}", "output": house.capacity, "cables": string_path_cords}
             
             # append hous_entry to "houses" key 
             entry["houses"].append(house_entry)
