@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter
 import matplotlib
+import json
 matplotlib.use('TkAgg')
 
 
@@ -23,7 +24,7 @@ class Smartgrid():
         
         self.csv_reader(filename_batteries, filename_houses)
         
-        self.visualisation(self.batteries, self.houses)
+        # self.visualisation(self.batteries, self.houses)
     
     def csv_reader(self, filename_batteries, filename_houses):
         """ initialize objects with csv data"""
@@ -125,11 +126,108 @@ class Smartgrid():
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
         plt.show()
 
+    def x_y_path(self, dict_connections):
+
+        # iterates trough all batteries in the dictionaries
+        for battery in dict_connections:
+            x_battery = battery.x
+            y_battery = battery.y
+            
+            connections = dict_connections[battery]
+
+            # iterates trough all houses at a specific battery
+            for houses in connections:
+                cable = self.cables[houses.identification]
+
+                x_house = houses.x
+                y_house = houses.y
+                
+                x_distance = x_battery - x_house
+                y_distance = y_battery - y_house
+                
+                # iterates trough all steps from the house to the battery
+                # determines left or right
+                for x_steps in range(abs(x_distance)):
+                    if x_distance < 0:
+                        cable.left()
+                        
+                    else:
+                        cable.right()
+                
+                    # iterates trough all steps from the house to the battery
+                    # determines up or down
+                    for y_steps in range(abs(y_distance)):
+                        if y_distance < 0:
+                            cable.down()
+                            
+                        else:
+                            cable.up()
+    
+    def cost_shared(self, dictionary):
+        total_cost = 0
+        for battery, houses in dictionary.items():
+            total_cost += 5000
+            for house in houses:
+                total_cost += 9 * (len(self.cables[house.identification].path) - 1)
+            
+        return total_cost
+
+    def json_writer(self, district, cost_shared, dictionary):
+        # create empty data list
+        data = []
+        
+        # first entry
+        entry1 = {"district": district, "cost-shared": cost_shared}
+        data.append(entry1)
+        
+        # loop to create remaining entries
+        for battery, houses in dictionary.items():
+        
+            # create battery entry
+            entry = {"location": f"{battery.x},{battery.y}", "capacity": battery.capacity,"houses": []}
+    
+            # loop for filling "houses" key of current battery entry
+            for house in houses:
+    
+                string_path_cords = []
+                
+                # turn path cords into string
+                for cords in self.cables[house.identification].path:
+                    string = f"{cords[0]},{cords[1]}"
+                    string_path_cords.append(string)
+                
+                # create house_entry
+                house_entry = {"location": f"{house.x, house.y}", "output": house.capacity, "cables": string_path_cords}
+                
+                # append hous_entry to "houses" key 
+                entry["houses"].append(house_entry)
+                
+            # append battery entry to data
+            data.append(entry)     
+        
+        # create json file containing "data"
+        with open('output.json', 'w') as json_file:
+            json.dump(data, json_file, indent=2)
+
     def get_data(self):
         return self.batteries, self.houses
             
 if __name__ == "__main__":
-    smartgrid = Smartgrid("1")
+    district = "1"
+    smartgrid = Smartgrid(district)
+
+    # distributing the houses evenly over the batteries
     batteries, houses = smartgrid.get_data()
     distribtion = even_distribution(batteries, houses)
+
+    # laying the cables
+    smartgrid.x_y_path(distribtion)
+
+    # calculating the total cost
+    # costs = smartgrid.cost_shared(distribtion)
+    print(smartgrid.cables[2].path)
+
+    # generating json output file
+    # smartgrid.json_writer(district, costs, distribtion)
+
     
