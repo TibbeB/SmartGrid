@@ -1,6 +1,7 @@
 from battery import Battery
 from house import House
 from cable import Cable
+from first_fit_decreasing_algorithm import even_distribution
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -123,7 +124,13 @@ class Smartgrid():
         # create grid and show plot
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
         plt.show()
+
+    def get_data(self):
+        return self.batteries, self.houses
             
 if __name__ == "__main__":
     smartgrid = Smartgrid("1")
+    batteries, houses = smartgrid.get_data()
+    
+    print(even_distribution(batteries, houses))
     
