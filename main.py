@@ -131,6 +131,5 @@ class Smartgrid():
 if __name__ == "__main__":
     smartgrid = Smartgrid("1")
     batteries, houses = smartgrid.get_data()
-    
-    print(even_distribution(batteries, houses))
+    distribtion = even_distribution(batteries, houses)
     
