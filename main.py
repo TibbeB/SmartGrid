@@ -1,3 +1,5 @@
+from random_switch import random_switch
+
 from battery import Battery
 from house import House
 from cable import Cable
@@ -59,9 +61,6 @@ class Smartgrid():
                 
                 # create cable object
                 self.cables[house_id] = Cable(self.houses[house_id])
-                
-                # print(self.cables[house_id].x)
-                # print(self.houses[house_id].x)
 
                 house_id += 1
                 
@@ -172,6 +171,9 @@ class Smartgrid():
         if battery_sums[np.argmax(battery_sums)] > 1506:
             return 1
 
+        for i in range(len(batteries)):
+            batteries[i].occupied_capacity = battery_sums[i]
+
         return connections
 
     def x_y_path(self, dict_connections):
@@ -266,17 +268,18 @@ if __name__ == "__main__":
 
     # distributing the houses evenly over the batteries
     batteries, houses = smartgrid.get_data()
-    distribtion = smartgrid.even_distribution(batteries, houses)
-
+    distribution = smartgrid.even_distribution(batteries, houses)
+        
     # laying the cables
-    smartgrid.x_y_path(distribtion)
+    smartgrid.x_y_path(distribution)
 
     # calculating the total cost
-    costs = smartgrid.cost_shared(distribtion)
+    costs = smartgrid.cost_shared(distribution)
 
-    # generating json output file
-    smartgrid.json_writer(district, costs, distribtion)
-
+    # generating json output file and plot solution
+    smartgrid.json_writer(district, costs, distribution)
     smartgrid.visualisation(batteries, houses)
+
+    
 
     
