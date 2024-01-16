@@ -1,4 +1,5 @@
 from numpy import random
+
 def random_switch(batteries, connections):
     
     battery_1, battery_2 = 0, 0
@@ -30,11 +31,11 @@ def random_switch(batteries, connections):
 
     if cap_1 > cap_2:
         battery_1.occupied_capacity += diff
-        battery_1.occupied_capacity -= diff
+        battery_2.occupied_capacity -= diff
 
     else:
         battery_1.occupied_capacity -= diff
-        battery_1.occupied_capacity += diff
+        battery_2.occupied_capacity += diff
 
     return connections
 
