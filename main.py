@@ -3,9 +3,9 @@ from random_switch import random_switch
 from hillclimb_random import hillclimb_random
 from x_y_path import x_y_path
 
-from battery import Battery
-from house import House
-from cable import Cable
+from objects.battery import Battery
+from objects.house import House
+from objects.cable import Cable
 
 import csv
 import pandas as pd
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     batteries, houses = smartgrid.get_data()
 
     # switch random houses
-    N = 100
+    N = 1000
     peak_state, costs_list = hillclimb_random(smartgrid, batteries, houses, N)
 
     print(costs_list)

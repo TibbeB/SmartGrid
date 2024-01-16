@@ -1,4 +1,5 @@
 from FFD import even_distribution
+from x_y_path import x_y_path
 from random_switch import random_switch
 
 def hillclimb_random(smartgrid, batteries, houses, N):
