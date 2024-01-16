@@ -1,11 +1,14 @@
 import numpy as np
 
-def even_distribution(batteries, houses):
-    """ Evenly distributes the max outputs of the houses over the batteries
+def even_distribution(batteries: dict, houses: dict) -> {object:[object]}:
+    """ evenly distributes the max outputs of the houses over the batteries
     
-    pre: batteries must be a dict, houses must be a dict
+    pre: 
+    - batteries must be a dict, houses must be a dict
+    - csv_reader is called
 
-    post: returns a dict or 1 if a max capacity is exceeded"""
+    post:
+    - returns a dict or 1 if a max capacity is exceeded"""
 
     connections = {}
 
