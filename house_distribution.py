@@ -8,7 +8,7 @@ def house_distribution(batteries: dict, houses: dict) -> dict:
     - batteries is a dict
     - houses is a dict
     
-    pro:
+    post:
     - connection is a dict filled with battery objects as keys
     - its values are lists of houses objects"""
 
