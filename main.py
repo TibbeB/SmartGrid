@@ -1,6 +1,7 @@
 from FFD import even_distribution
 from random_switch import random_switch
 from hillclimb_random import hillclimb_random
+from x_y_path import x_y_path
 
 from battery import Battery
 from house import House
@@ -106,7 +107,7 @@ class Smartgrid():
         
         return x_list, y_list, capacity_list, key_list
                 
-    def visualisation(self, batteries_dict: dict, houses_dict: none) -> None:
+    def visualisation(self, batteries_dict: dict, houses_dict: None) -> None:
         """ creates a scatter plot with extracted cords and capacity
         
         pre:
@@ -166,51 +167,8 @@ class Smartgrid():
         plt.show()
 
     def x_y_path(self, dict_connections: {object:[object]}) -> None:
-        """connect cables from houses to batteries
+        x_y_path(self, dict_connections)
         
-        pre:
-        - dict_connections is a dict
-        - csv_reader is called
-        - even_distribution is called
-        
-        post:
-        - all houses are connected to batteries"""
-
-        # iterates trough all batteries in the dictionaries
-        for battery in dict_connections:
-            x_battery = battery.x
-            y_battery = battery.y
-            
-            connections = dict_connections[battery]
-
-            # iterates trough all houses at a specific battery
-            for houses in connections:
-                cable = self.cables[houses.identification]
-
-                x_house = houses.x
-                y_house = houses.y
-                
-                x_distance = x_battery - x_house
-                y_distance = y_battery - y_house
-                
-                # iterates trough all steps from the house to the battery
-                # determines left or right
-                for x_steps in range(abs(x_distance)):
-                    if x_distance < 0:
-                        cable.left()
-                        
-                    else:
-                        cable.right()
-                
-                # iterates trough all steps from the house to the battery
-                # determines up or down
-                for y_steps in range(abs(y_distance)):
-                    if y_distance < 0:
-                        cable.down()
-                        
-                    else:
-                        cable.up()
-    
     def cost_shared(self, dictionary: {object:[object]}) -> int:
         """calculates total cost of state
         
