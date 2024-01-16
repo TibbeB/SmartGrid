@@ -31,8 +31,15 @@ class Smartgrid():
         
         # self.visualisation(self.batteries, self.houses)
     
-    def csv_reader(self, filename_batteries, filename_houses):
-        """ initialize objects with csv data"""
+    def csv_reader(self, filename_batteries: str, filename_houses: str) -> None:
+        """ initialize objects with csv data
+        
+        pre:
+        - filename_batteries is a str
+        - filename_houses is a str
+        
+        post:
+        - self.batteries, self.houses and self.cables are filled with objects"""
         
         # read batteries
         with open(filename_batteries, 'r') as file:
@@ -67,8 +74,14 @@ class Smartgrid():
 
                 house_id += 1
                 
-    def extract_cords_and_capacity(self, dictionary):
-        """ extracts cords, capacities and key names from objects in house and battery dicts"""
+    def extract_cords_and_capacity(self, dictionary: dict) -> list:
+        """ extracts cords, capacities and key names from objects in house and battery dicts
+        
+        pre: 
+        - dictionary is a dict
+        
+        post:
+        - returns 4 list containing key names(1), cords(2) and capcities(1)"""
         
         # create lists
         x_list = []
@@ -93,8 +106,18 @@ class Smartgrid():
         
         return x_list, y_list, capacity_list, key_list
                 
-    def visualisation(self, batteries_dict, houses_dict):
-        """ creates a scatter plot with extracted cords and capacity"""
+    def visualisation(self, batteries_dict: dict, houses_dict: none) -> None:
+        """ creates a scatter plot with extracted cords and capacity
+        
+        pre:
+        - batteries_dict is a dict
+        - houses_dict is a dict
+        - csv_reader is called
+        - even_distribution is called
+        - x_y_path is called
+        
+        post:
+        - a plot of the state is generated and displayed"""
         
         # extract cords, capacities and key names of objects in house and battery dict
         batteries_list = self.extract_cords_and_capacity(batteries_dict)
@@ -142,7 +165,16 @@ class Smartgrid():
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
         plt.show()
 
-    def x_y_path(self, dict_connections):
+    def x_y_path(self, dict_connections: {object:[object]}) -> None:
+        """connect cables from houses to batteries
+        
+        pre:
+        - dict_connections is a dict
+        - csv_reader is called
+        - even_distribution is called
+        
+        post:
+        - all houses are connected to batteries"""
 
         # iterates trough all batteries in the dictionaries
         for battery in dict_connections:
@@ -179,7 +211,18 @@ class Smartgrid():
                     else:
                         cable.up()
     
-    def cost_shared(self, dictionary):
+    def cost_shared(self, dictionary: {object:[object]}) -> int:
+        """calculates total cost of state
+        
+        pre:
+        - dictionary is a dict
+        - csv_reader is called
+        - even_distribution is called
+        - x_y_path is called
+        
+        post:
+        - total cost is returned as int: total_cost"""
+        
         total_cost = 0
         for battery, houses in dictionary.items():
             total_cost += 5000
@@ -188,7 +231,20 @@ class Smartgrid():
             
         return total_cost
 
-    def json_writer(self, district, cost_shared, dictionary):
+    def json_writer(self, district: str, cost_shared: int, dictionary: {object:[object]}) -> None:
+        """ creates json file
+        
+        pre:
+        - district is a str
+        - cost_shared is a int
+        - dictionary is a dict
+        - csv_reader is called
+        - even_distribution is called
+        - x_y_path is called
+        
+        post:
+        - json file is created and saved to SmartGrid folder"""
+        
         # create empty data list
         data = []
         
@@ -225,7 +281,15 @@ class Smartgrid():
         with open('output.json', 'w') as json_file:
             json.dump(data, json_file, indent=2)
 
-    def get_data(self):
+    def get_data(self) -> dict:
+        """returns batteries and houses dicts
+        
+        pre:
+        - csv_reader is called
+        
+        post:
+        - returns self.batteries and self.houses"""
+        
         return self.batteries, self.houses
             
 if __name__ == "__main__":
