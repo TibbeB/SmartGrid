@@ -1,7 +1,5 @@
-from FFD import even_distribution
-from random_switch import random_switch
-from hillclimb_random import hillclimb_random
-from x_y_path import x_y_path
+from FFD import even_distribution, x_y_path
+from hillclimb_not_random import hillclimb_random
 
 from objects.battery import Battery
 from objects.house import House
@@ -258,7 +256,7 @@ if __name__ == "__main__":
     batteries, houses = smartgrid.get_data()
 
     # switch random houses
-    N = 1000
+    N = 5000
     peak_state, costs_list = hillclimb_random(smartgrid, batteries, houses, N)
 
     print(costs_list)

@@ -1,5 +1,7 @@
 import numpy as np
 
+from objects.cable import Cable
+
 def even_distribution(batteries: dict, houses: dict) -> {object:[object]}:
     """ evenly distributes the max outputs of the houses over the batteries
     
@@ -41,7 +43,17 @@ def even_distribution(batteries: dict, houses: dict) -> {object:[object]}:
 
     return connections
 
-def x_y_path(self, dict_connections):
+
+def x_y_path(self, dict_connections: {object:[object]}) -> None:
+    """connect cables from houses to batteries
+    
+    pre:
+    - dict_connections is a dict
+    - csv_reader is called
+    - even_distribution is called
+    
+    post:
+    - all houses are connected to batteries"""
 
     # iterates trough all batteries in the dictionaries
     for battery in dict_connections:
