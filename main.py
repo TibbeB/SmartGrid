@@ -256,7 +256,7 @@ if __name__ == "__main__":
     batteries, houses = smartgrid.get_data()
 
     # switch random houses
-    N = 5000
+    N = 0
     peak_state, costs_list = hillclimb_random(smartgrid, batteries, houses, N)
 
     print(costs_list)
