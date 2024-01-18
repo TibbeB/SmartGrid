@@ -8,7 +8,6 @@ def cable_connection_algorithm(connections, cables):
         cables_coordinates_list = []
         
         for house in houses:
-            print("-")
         
             xh = house.x
             yh = house.y
@@ -23,7 +22,7 @@ def cable_connection_algorithm(connections, cables):
             da2 = 9999
             
             cable = cables[house.identification]
-            
+
             xc = cable.x
             yc = cable.y
             
@@ -40,6 +39,8 @@ def cable_connection_algorithm(connections, cables):
                     # save coordinates
                     cable_coordinates = (coordinates[0], coordinates[1])
                     
+            cables_coordinates_list.append((cable.x, cable.y))
+                    
             # if an already layed cable segment is closer than the battery, connect to that segment
             if da2 < da1:
 
@@ -48,71 +49,68 @@ def cable_connection_algorithm(connections, cables):
                 
                 if dx2 < 0:
                     while cable.x < cable_coordinates[0]:
-                        print(cable.x, cable_coordinates[0])
                         cable.right()
                         cables_coordinates_list.append((cable.x, cable.y))
                     
                 if dx2 > 0:
                     while cable.x > cable_coordinates[0]:
-                        print(cable.x, cable_coordinates[0])
                         cable.left()
                         cables_coordinates_list.append((cable.x, cable.y))
                         
                 if dy2 < 0:
                     while cable.y < cable_coordinates[1]:
-                        print(cable.y, cable_coordinates[0])
                         cable.up()
                         cables_coordinates_list.append((cable.x, cable.y))
                         
                 if dy2 > 0:
                     while cable.y > cable_coordinates[1]:
-                        print(cable.y, cable_coordinates[0])
                         cable.down()
                         cables_coordinates_list.append((cable.x, cable.y))
                 continue
                 
             if dx1 < 0:
                 while cable.x < xb:
-                    print(cable.x, xb)
                     cable.right()
                     cables_coordinates_list.append((cable.x, cable.y))
                     
             if dx1 > 0:
                 while cable.x > xb:
-                    print(cable.x, xb)
                     cable.left()
                     cables_coordinates_list.append((cable.x, cable.y))
                     
             if dy1 < 0:
                 while cable.y < yb:
-                    print(cable.y, yb)
                     cable.up()
                     cables_coordinates_list.append((cable.x, cable.y))
                     
             if dy1 > 0:
                 while cable.y > yb:
-                    print(cable.y, yb)
                     cable.down()
                     cables_coordinates_list.append((cable.x, cable.y))
                         
-        print("done")
+
                 
 if __name__ == "__main__":
     district = "1"
-    smartgrid = Smartgrid(district)
+    
+    cost_list = []
+    for i in range(1000):
+        smartgrid = Smartgrid(district)
 
-    b, h = smartgrid.get_data()
+        b, h = smartgrid.get_data()
+        
+        connections = random_state_generator(b, h)
+        
+        cable_connection_algorithm(connections, smartgrid.cables)
+        
+        costs = smartgrid.cost_shared(connections)
+        
+        cost_list.append(costs) 
+        
+    average = sum(cost_list) / len(cost_list)
+   
+    print(average)
     
-    connections = random_state_generator(b, h)
-    
-    cable_connection_algorithm(connections, smartgrid.cables)
-    
-    costs = smartgrid.cost_shared(connections)
-    
-    smartgrid.json_writer(district, costs, connections)
-    
-    print(costs)     
-    smartgrid.visualisation(b, h)       
                     
                
                 
