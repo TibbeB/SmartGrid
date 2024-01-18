@@ -43,7 +43,10 @@ def make_solution(batteries, connections):
                     battery_2 = batteries[index_b2]
 
                 # Select house
-                index_h = random.randint(len(connections[battery_1]))
+                index_h = random.randint(0, len(connections[battery_1]) - 1)
+
+        
+               
                 output_h = connections[battery_1][index_h].capacity
 
                 # Battery 1 decreases and battery 2 increases
@@ -55,8 +58,9 @@ def make_solution(batteries, connections):
                     return 1
                 
 
-            # Switch the house (Delete from battery 1 and add to battery 2)
-            connections[battery_2].append(connections[battery_1].pop(index_h))
+            # Switch the house (Delete from battery 1 and add to battery 2)            
+            if tries < 1000:
+                connections[battery_2].append(connections[battery_1].pop(index_h))
             
             # Update capacity 
             occupied_c[index_b1] -= output_h
@@ -112,9 +116,11 @@ def make_solution(batteries, connections):
     return connections
 
 if __name__ == "__main__":
-    s = Smartgrid("1")
-    b, h = s.get_data()
-    connections = random_state_generator(b, h)
+    N = 100
+    for N in range(100):
+        s = Smartgrid("1")
+        b, h = s.get_data()
+        connections = random_state_generator(b, h)
 
-    new_connections = make_solution(b, connections)
-    
+        new_connections = make_solution(b, connections)
+        
