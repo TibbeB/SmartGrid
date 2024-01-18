@@ -1,7 +1,8 @@
 # import fucntions from different files
-from house_distribution import house_distribution
-from x_y_path import x_y_path
+from random_state_generator import random_state_generator
+from FFD import x_y_path
 from main import Smartgrid
+from cable_connection_algorithm import cable_connection_algorithm
 
 # imports to plot 
 import matplotlib.pyplot as plt
@@ -10,7 +11,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 
 # set district variable
-district = "2"
+district = "1"
 
 # number of random states to generate
 N = 10000
@@ -27,10 +28,10 @@ for i in range(N):
     batteries, houses = smartgrid.get_data()
 
     # generate random state
-    random_state = house_distribution(batteries, houses)
+    random_state = random_state_generator(batteries, houses)
     
     # connect paths
-    smartgrid.x_y_path(random_state)
+    cable_connection_algorithm(random_state, smartgrid.cables)
     
     # append random state cost to random_states_list
     random_states_list.append(smartgrid.cost_shared(random_state))

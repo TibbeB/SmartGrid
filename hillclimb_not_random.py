@@ -1,5 +1,4 @@
-from FFD import even_distribution
-from x_y_path import x_y_path
+from FFD import even_distribution, x_y_path
 from numpy import random
 
 def random_switch(batteries, connections):
