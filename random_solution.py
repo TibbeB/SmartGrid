@@ -1,6 +1,5 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
-from FFD import x_y_path
 from numpy import random
 import numpy as np
 
@@ -16,6 +15,9 @@ def make_solution(batteries, connections):
     for key, battery in batteries.items():
         occupied_c.append(battery.occupied_capacity)
         capacities.append(battery.capacity)
+
+    copy_dict = connections.copy()
+    copy_c = occupied_c.copy()
 
     # make new(/better) state by switching 1 or 2 house(s)
     j = 0
@@ -48,10 +50,13 @@ def make_solution(batteries, connections):
                 if abs((occupied_c[index_b1] - output_h) - capacities[index_b1]) < abs((occupied_c[index_b1]) - capacities[index_b1]):
                         if abs((occupied_c[index_b2] + output_h) - capacities[index_b2]) < abs((occupied_c[index_b2]) - capacities[index_b2]):
                             break
-            
+
+                if tries > 6000:
+                    return 1
+                
+
             # Switch the house (Delete from battery 1 and add to battery 2)
-            connections[battery_2].append(connections[battery_1][index_h])
-            connections[battery_1].pop(index_h)
+            connections[battery_2].append(connections[battery_1].pop(index_h))
             
             # Update capacity 
             occupied_c[index_b1] -= output_h
@@ -63,7 +68,7 @@ def make_solution(batteries, connections):
         else:
             while True:
                 tries += 1
-                print(tries)
+
                 # Select batteries
                 battery_1, battery_2 = 0, 0
                 while battery_1 == battery_2:
@@ -89,6 +94,9 @@ def make_solution(batteries, connections):
                     if abs((occupied_c[index_b1] - diff) - capacities[index_b1]) < abs((occupied_c[index_b1]) - capacities[index_b1]):
                         if abs((occupied_c[index_b2] + diff) - capacities[index_b2]) < abs((occupied_c[index_b2]) - capacities[index_b2]):
                             break
+
+                if tries > 6000:
+                    return 1
 
             # Switch the houses
             house1 = connections[battery_1][index_h1]
