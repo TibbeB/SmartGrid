@@ -44,9 +44,7 @@ def make_solution(batteries, connections):
 
                 # Select house
                 index_h = random.randint(0, len(connections[battery_1]) - 1)
-
-        
-               
+       
                 output_h = connections[battery_1][index_h].capacity
 
                 # Battery 1 decreases and battery 2 increases
@@ -62,11 +60,11 @@ def make_solution(batteries, connections):
             if tries < 1000:
                 connections[battery_2].append(connections[battery_1].pop(index_h))
             
-            # Update capacity 
-            occupied_c[index_b1] -= output_h
-            occupied_c[index_b2] += output_h
-            battery_1.occupied_capacity -= output_h
-            battery_2.occupied_capacity += output_h           
+                # Update capacity 
+                occupied_c[index_b1] -= output_h
+                occupied_c[index_b2] += output_h
+                battery_1.occupied_capacity -= output_h
+                battery_2.occupied_capacity += output_h           
 
         # Switch two houses
         else:
