@@ -62,11 +62,11 @@ def make_solution(batteries, connections):
             if tries < 1000:
                 connections[battery_2].append(connections[battery_1].pop(index_h))
             
-            # Update capacity 
-            occupied_c[index_b1] -= output_h
-            occupied_c[index_b2] += output_h
-            battery_1.occupied_capacity -= output_h
-            battery_2.occupied_capacity += output_h           
+                # Update capacity 
+                occupied_c[index_b1] -= output_h
+                occupied_c[index_b2] += output_h
+                battery_1.occupied_capacity -= output_h
+                battery_2.occupied_capacity += output_h           
 
         # Switch two houses
         else:

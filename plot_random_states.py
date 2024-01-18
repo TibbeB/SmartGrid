@@ -3,6 +3,7 @@ from random_state_generator import random_state_generator
 from FFD import x_y_path
 from main import Smartgrid
 from cable_connection_algorithm import cable_connection_algorithm
+from random_solution import make_solution
 
 # imports to plot 
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ matplotlib.use('TkAgg')
 district = "1"
 
 # number of random states to generate
-N = 10000
+N = 3000
 
 # cost list of gererated states
 random_states_list = []
@@ -33,6 +34,10 @@ for i in range(N):
     # connect paths
     cable_connection_algorithm(random_state, smartgrid.cables)
     
+    make_solution(batteries, random_state)
+    
+    if random_state == 1:
+        continue
     # append random state cost to random_states_list
     random_states_list.append(smartgrid.cost_shared(random_state))
 
@@ -48,6 +53,8 @@ for i in range(len(random_states_list)):
 
 # scatter plot of random state costs against their frequencies
 plt.scatter(random_states_list, multiplier)
+plt.xlabel('X-axis Label')
+plt.ylabel('Y-axis Label')
 plt.show()
 
 
