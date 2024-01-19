@@ -44,9 +44,7 @@ def make_solution(batteries, connections):
 
                 # Select house
                 index_h = random.randint(0, len(connections[battery_1]) - 1)
-
-        
-               
+       
                 output_h = connections[battery_1][index_h].capacity
 
                 # Battery 1 decreases and battery 2 increases
