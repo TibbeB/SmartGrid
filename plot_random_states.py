@@ -15,10 +15,12 @@ matplotlib.use('TkAgg')
 district = "1"
 
 # number of random states to generate
-N = 3000
+N = 400
 
 # cost list of gererated states
 random_states_list = []
+
+unique_state_list = []
 
 for i in range(N):
 
@@ -31,30 +33,50 @@ for i in range(N):
     # generate random state
     random_state = random_state_generator(batteries, houses)
     
-    # connect paths
-    cable_connection_algorithm(random_state, smartgrid.cables)
+    solution_state = make_solution(batteries, random_state)
     
-    make_solution(batteries, random_state)
-    
-    if random_state == 1:
+    if solution_state == 1:
         continue
+        
+    # connect paths
+    cable_connection_algorithm(solution_state, smartgrid.cables)
+    
+    unique_state_list.append(solution_state)
+    
     # append random state cost to random_states_list
     random_states_list.append(smartgrid.cost_shared(random_state))
 
+id_occupied_capacities = [] 
 
-# list to store the frequency of each unique random state
-multiplier = [0] * len(random_states_list)
+identification = 0
+for state in unique_state_list:
 
-# count the frequency of each unique random state
-for i in range(len(random_states_list)):
-    for j in range(i+1, len(random_states_list)):
-        if random_states_list[j] == random_states_list[i]:
-            multiplier[i] += 1
+    token_string = ""
+    
+    for battery in state:
+    
+        token_string += f"{battery.occupied_capacity}"
+        
+    dot_free_token_string = token_string.replace(".","")
+    
+    identification += 1
+    
+    id_occupied_capacities.append([identification, int(dot_free_token_string)])
+   
+id_list = []   
+for i in range(len(id_occupied_capacities)):
+    for j in range(i+1,len(id_occupied_capacities)):
+        if id_occupied_capacities[i][1] == id_occupied_capacities[j][1]:
+            id_occupied_capacities[j][0] = id_occupied_capacities[i][0]
+            
+    id_list.append(id_occupied_capacities[i][0])
+   
+plt.hist(id_list, bins=400)
 
-# scatter plot of random state costs against their frequencies
-plt.scatter(random_states_list, multiplier)
-plt.xlabel('X-axis Label')
-plt.ylabel('Y-axis Label')
+plt.xlabel('State')
+plt.ylabel('Frequency')
+
+plt.savefig('baseline.png')
 plt.show()
 
 
