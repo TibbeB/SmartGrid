@@ -1,5 +1,6 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
+from battery_distance import battery_distance
 from numpy import random
 import numpy as np
 
