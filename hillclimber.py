@@ -60,16 +60,7 @@ def random_switch(batteries, connections):
     return state_copy
 
 
-def hillclimber(N):
-    # make state
-    state = 1
-    while state == 1:
-        s = Smartgrid("1")
-        b, h = s.get_data()
-        random_state = random_state_generator(b, h)
-        state = make_solution(b, random_state)
-
-    
+def hillclimber(s, N, state, b):    
     # make lists for to store data
     climb = []
     iteration = []
@@ -82,7 +73,10 @@ def hillclimber(N):
 
     # Make small changes
     for i in range(N):
-        print(i)
+        # print(i)
+
+        climb.append(cost)
+        iteration.append(i + 1)
 
         # clear cables
         for key, cable in s.cables.items():
@@ -92,8 +86,6 @@ def hillclimber(N):
         new_state = random_switch(b, state)
         cable_connection_algorithm(new_state, s.cables)
         new_cost = s.cost_shared(new_state)
-        climb.append(new_cost)
-        iteration.append(i + 1)
 
         # check if new state is better
         if new_cost < cost:
@@ -108,18 +100,27 @@ def hillclimber(N):
                 b[i] = new_batteries[i]
 
 
-    cable_connection_algorithm(state, s.cables)
-    s.visualisation(b, h)
+    # cable_connection_algorithm(state, s.cables)
+    # s.visualisation(b, h)
 
     return state, climb, iteration
 
 if __name__ == '__main__':
+    # make state
+    state = 1
+    while state == 1:
+        s = Smartgrid("1")
+        b, h = s.get_data()
+        random_state = random_state_generator(b, h)
+        state = make_solution(b, random_state)
+    
     # hillclimb
-    N = 5000
-    peak_state, cost_climb, iteration = hillclimber(N)
+    for i in range(5):
+        N = 100
+        b_or = b.copy()
+        peak_state, cost_climb, iteration = hillclimber(s, N, state, b_or)
+        print(min(cost_climb))
 
-    print(iteration)
-    print(cost_climb)
     plt.plot(iteration, cost_climb)
     plt.savefig("hillclimb.png")
     plt.show()
