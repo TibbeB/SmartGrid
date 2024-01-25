@@ -1,5 +1,5 @@
 from FFD import even_distribution, x_y_path
-from hillclimb_not_random import hillclimb_random
+from optimalization.hillclimb_not_random import hillclimb_random
 
 from objects.battery import Battery
 from objects.house import House
@@ -162,6 +162,7 @@ class Smartgrid():
         
         # create grid and show plot
         plt.grid(True, dashes=(1, 1), linewidth=0.5)
+        plt.savefig("1.png")
         plt.show()
 
     def x_y_path(self, dict_connections: {object:[object]}) -> None:
