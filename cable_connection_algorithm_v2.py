@@ -2,6 +2,8 @@ from main import Smartgrid
 from random_state_generator import random_state_generator
 from random_solution import make_solution
 from quick_plotter import quick_plot
+from battery_distance import battery_distance
+from cable_connection_hillclimber import cable_connection_hillclimber
 import time
 
 
@@ -82,7 +84,7 @@ if __name__ == "__main__":
     costs_list = []
     
     def experiment():
-        for i in range(100):
+        for i in range(1000):
             
             district = "1"
 
@@ -90,22 +92,24 @@ if __name__ == "__main__":
             
             batteries, houses = smartgrid.get_data()
 
-            invalid_state = random_state_generator(batteries, houses)
+            invalid_state = battery_distance(batteries, houses)
             
             valid_state = make_solution(batteries, invalid_state)
             
             if valid_state != 1:
                 
                 cable_connection_v1(valid_state, smartgrid.cables)
+                
+                cable_connection_hillclimber(valid_state, smartgrid.cables, 1000)
                     
                 costs = smartgrid.cost_shared(valid_state)
                 
                 costs_list.append(costs)
                 
-        print(sum(costs_list) / len(costs_list))
+        print(f"- {i} itterations | minimum cost = {min(costs_list)} | average cost = {sum(costs_list) / len(costs_list)}")
         
     def plot():
-        district = "3"
+        district = "1"
 
         smartgrid = Smartgrid(district)
         
@@ -125,10 +129,10 @@ if __name__ == "__main__":
             
             quick_plot(valid_state, smartgrid.cables)
     
-    plot()
+    experiment()
     
     end_time = time.time()
 
     elapsed_time = end_time - start_time
 
-    print(f"Execution time: {elapsed_time} seconds")
+    print(f"- Execution time: {elapsed_time} seconds")
