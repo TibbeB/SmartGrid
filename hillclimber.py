@@ -2,6 +2,7 @@ from main import Smartgrid
 from random_state_generator import random_state_generator
 from random_solution import make_solution
 from cable_connection_algorithm import cable_connection_algorithm
+from quick_plotter import quick_plot
 
 import matplotlib.pyplot as plt
 from numpy import random
@@ -72,8 +73,10 @@ def hillclimber(s, N, state, b):
     iteration.append(0)
 
     # Make small changes
+    succes = 0
     for i in range(N):
-        # print(i)
+        if i % 1000 == 0:
+            print(i)
 
         climb.append(cost)
         iteration.append(i + 1)
@@ -89,6 +92,7 @@ def hillclimber(s, N, state, b):
 
         # check if new state is better
         if new_cost < cost:
+            succes += 1
             state = new_state
             cost = new_cost
             
@@ -99,11 +103,10 @@ def hillclimber(s, N, state, b):
             for i in range(5):
                 b[i] = new_batteries[i]
 
+    cables = cable_connection_algorithm(state, s.cables)
+    quick_plot(state, s.cables)
 
-    # cable_connection_algorithm(state, s.cables)
-    # s.visualisation(b, h)
-
-    return state, climb, iteration
+    return state, climb, iteration, succes
 
 if __name__ == '__main__':
     # make state
@@ -115,11 +118,12 @@ if __name__ == '__main__':
         state = make_solution(b, random_state)
     
     # hillclimb
-    for i in range(5):
+    for i in range(1):
         N = 100
         b_or = b.copy()
-        peak_state, cost_climb, iteration = hillclimber(s, N, state, b_or)
+        peak_state, cost_climb, iteration, succes = hillclimber(s, N, state, b_or)
         print(min(cost_climb))
+        print(succes)
 
     plt.plot(iteration, cost_climb)
     plt.savefig("hillclimb.png")
