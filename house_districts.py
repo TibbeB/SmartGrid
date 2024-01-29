@@ -18,6 +18,11 @@ def house_districts(batteries: dict, houses: dict) -> dict:
     connections = {}
     district_capacity = 30
 
+
+        # setting batteries as keys and empty lists as values
+    for identification, battery in batteries.items():
+        
+        connections[battery] = []
     # Step 1: Determine the number of districts
     num_districts = 5
     
@@ -39,24 +44,73 @@ def house_districts(batteries: dict, houses: dict) -> dict:
     
     cluster_center = gefit.cluster_centers_.tolist()
     
-    clusters = {}
+    cluster_centers = {}
+    
+    
     
     for i, pair in enumerate(cluster_center):
-        clusters[i] = pair    
-        
+        cluster_centers[i] = pair    
+   
+    asigned_batteries = []
+    min_distance = float('inf')
+    asigned_clusters = {}
     
-    for cluster in clusters:
+    for cluster in cluster_centers:
+    
+        x_cluster = cluster_centers[cluster][0]
+        y_cluster = cluster_centers[cluster][1]
         
-        x = clusters[cluster][0]
-        y = clusters[cluster][1]
+        neares_battery = None
+        
+        for battery in batteries:
+        
+            if battery in asigned_batteries:
+                continue
+                
+            x_battery = batteries[battery].x
+            y_battery = batteries[battery].y
+            
+            distance = (abs(x_cluster - x_battery) ** 2 + abs(y_cluster - y_battery) ** 2) ** 0.5
+            
+            if distance < min_distance:
+                distance = min_distance
+                neares_battery = battery
+                
+        asigned_batteries.append(neares_battery)
+        
+        asigned_clusters[cluster] = neares_battery
+        
+    index = 0
+    
+    for clusters in cluster_values:
+        
+        battery_id = asigned_clusters[clusters]
+        battery = batteries[battery_id]
+        house = houses[index]
+        
+        shortest_distance = float('inf')
+        closest_cluster = 0
+
+        x = cluster_center[clusters][0]
+        y = cluster_center[clusters][1]
+
+        battery.occupied_capacity += house.capacity
+        connections[battery].append(house)
+       
+        index += 1
         
         
         
-    print(cluster_values.count(0))
+        
+    # for battery in connections:
+        # if 
+        # for house in connections[battery]
+            
+        
     plt.scatter(house_x, house_y, c = kmeans.labels_)
     plt.show()
         
-
+    
     return connections
 
 
