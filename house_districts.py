@@ -139,13 +139,13 @@ def house_districts(batteries: dict, houses: dict) -> dict:
         index += 1
         
             
-    plt.scatter(house_x, house_y, c = kmeans.labels_)
-    plt.show()
+    # plt.scatter(house_x, house_y, c = kmeans.labels_)
+    # plt.show()
         
-    print(len(connections[batteries[0]]) + len(connections[batteries[1]]) + len(connections[batteries[2]]) + len(connections[batteries[3]]) + len(connections[batteries[4]]))
+    # print(len(connections[batteries[0]]) + len(connections[batteries[1]]) + len(connections[batteries[2]]) + len(connections[batteries[3]]) + len(connections[batteries[4]]))
     return connections
 
-def house_districts_optimization(connections: dict) -> dict:
+def house_districts_optimization(s, connections: dict) -> dict:
 
     # Generate permutations of values (lists)
     values_permutations = permutations(connections.values())
@@ -171,8 +171,10 @@ def house_districts_optimization(connections: dict) -> dict:
         for key, cable in s.cables.items():
             cable.clear_cable()
             
-    cables = cable_connection_v1(best_dict, s.cables)
-    quick_plot(best_dict, s.cables)
+    # cables = cable_connection_v1(best_dict, s.cables)
+    # quick_plot(best_dict, s.cables)
+
+    return best_dict
             
    
 
