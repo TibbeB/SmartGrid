@@ -82,35 +82,66 @@ def house_districts(batteries: dict, houses: dict) -> dict:
         
     index = 0
     
+    empty_clusters = [0, 1, 2, 3, 4]
+    
+    test = 0
+    
     for clusters in cluster_values:
         
         battery_id = asigned_clusters[clusters]
         battery = batteries[battery_id]
-        house = houses[index]
-        
+        house = houses[index]     
         shortest_distance = float('inf')
         closest_cluster = 0
 
         x = cluster_center[clusters][0]
         y = cluster_center[clusters][1]
+        
+        
+        
+        if (battery.occupied_capacity + house.capacity) < battery.capacity:
+            test += 1
+            battery.occupied_capacity += house.capacity
+            connections[battery].append(house)
+           
 
-        battery.occupied_capacity += house.capacity
-        connections[battery].append(house)
-       
+        
+        else: 
+            
+            if clusters in empty_clusters:
+                empty_clusters.remove(clusters)
+                
+            for cluster in empty_clusters:
+        
+                if cluster == clusters:
+                    continue
+                    
+             
+                else:
+                    x_test = cluster_center[cluster][0]
+                    y_test = cluster_center[cluster][1]
+                    
+                    distance = (abs(x - x_test) ** 2 + abs(y - y_test) ** 2) ** 0.5
+                    
+                    if distance < shortest_distance:
+                        shortest_distance = distance
+                        closest_cluster = cluster 
+                    
+            battery_id = asigned_clusters[closest_cluster]
+            battery = batteries[battery_id]
+         
+            battery.occupied_capacity += house.capacity
+            connections[battery].append(house)
+                    
+
+            
         index += 1
         
-        
-        
-        
-    # for battery in connections:
-        # if 
-        # for house in connections[battery]
             
-        
     plt.scatter(house_x, house_y, c = kmeans.labels_)
     plt.show()
         
-    
+    print(len(connections[batteries[0]]) + len(connections[batteries[1]]) + len(connections[batteries[2]]) + len(connections[batteries[3]]) + len(connections[batteries[4]]))
     return connections
 
 
