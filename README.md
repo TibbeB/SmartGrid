@@ -38,7 +38,7 @@ python3 experiment1.py
 
 na afloop kunnen de resulaten gevisualiseerd worden via json_reader.py
 
-deze roep je aan met devolgende code:
+deze roep je aan met de volgende code:
 
 ```
 python3 json_reader.py
