@@ -2,6 +2,10 @@ import random
 import math
 from objects.battery import Battery
 from main import Smartgrid
+from itertools import permutations
+from cable_connection_algorithm_v5 import cable_connection_v1
+from quick_plotter import quick_plot
+
 
 import random
 import math
@@ -55,6 +59,7 @@ def house_districts(batteries: dict, houses: dict) -> dict:
     min_distance = float('inf')
     asigned_clusters = {}
     
+    # connects batteries to clusters
     for cluster in cluster_centers:
     
         x_cluster = cluster_centers[cluster][0]
@@ -86,6 +91,7 @@ def house_districts(batteries: dict, houses: dict) -> dict:
     
     test = 0
     
+    # asigning houses to batteries
     for clusters in cluster_values:
         
         battery_id = asigned_clusters[clusters]
@@ -95,17 +101,13 @@ def house_districts(batteries: dict, houses: dict) -> dict:
         closest_cluster = 0
 
         x = cluster_center[clusters][0]
-        y = cluster_center[clusters][1]
-        
-        
+        y = cluster_center[clusters][1] 
         
         if (battery.occupied_capacity + house.capacity) < battery.capacity:
             test += 1
             battery.occupied_capacity += house.capacity
             connections[battery].append(house)
-           
-
-        
+  
         else: 
             
             if clusters in empty_clusters:
@@ -115,8 +117,7 @@ def house_districts(batteries: dict, houses: dict) -> dict:
         
                 if cluster == clusters:
                     continue
-                    
-             
+
                 else:
                     x_test = cluster_center[cluster][0]
                     y_test = cluster_center[cluster][1]
@@ -144,7 +145,36 @@ def house_districts(batteries: dict, houses: dict) -> dict:
     print(len(connections[batteries[0]]) + len(connections[batteries[1]]) + len(connections[batteries[2]]) + len(connections[batteries[3]]) + len(connections[batteries[4]]))
     return connections
 
+def house_districts_optimization(connections: dict) -> dict:
 
+    # Generate permutations of values (lists)
+    values_permutations = permutations(connections.values())
+    
+    lowest_cost = float('inf')
+    best_dict = {}
+    # Iterate through permutations
+    for values_permutation in values_permutations:
+        # Create a new dictionary for the current permutation
+        new_dict = {}
+        for key, value in zip(connections.keys(), values_permutation):
+            new_dict[key] = value
+        
+        
+        cable_connection_v1(new_dict, s.cables)
+        new_cost = s.cost_shared(new_dict)
+        
+        if new_cost < lowest_cost:
+            lowest_cost = new_cost
+            best_dict = new_dict
+            
+        # clear cables
+        for key, cable in s.cables.items():
+            cable.clear_cable()
+            
+    cables = cable_connection_v1(best_dict, s.cables)
+    quick_plot(best_dict, s.cables)
+            
+   
 
 if __name__ == "__main__":
     # test code 
@@ -152,6 +182,8 @@ if __name__ == "__main__":
     b, h = s.get_data()
 
     connections = house_districts(b, h)
+    
+    house_districts_optimization(connections)
 
     # for battery, houses in connections.items():
         # print("-----------------------------------------")
@@ -163,5 +195,4 @@ if __name__ == "__main__":
         # print(f"{c} houses")
     
     
-    print(s.cost_shared(connections))    
     
