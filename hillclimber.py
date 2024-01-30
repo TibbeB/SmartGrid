@@ -1,7 +1,8 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
 from random_solution import make_solution
-from cable_connection_algorithm import cable_connection_algorithm
+from cable_connection_algorithm_v5 import cable_connection_v1
+
 from quick_plotter import quick_plot
 from house_districts import house_districts, house_districts_optimization
 
@@ -69,7 +70,7 @@ def hillclimber(s, N, state, b):
     iteration = []
  
     # Set start point of the climb
-    cable_connection_algorithm(state, s.cables)
+    cable_connection_v1(state, s.cables)
     cost = s.cost_shared(state)
     climb.append(cost)
     iteration.append(0)
@@ -89,7 +90,7 @@ def hillclimber(s, N, state, b):
 
         # calculate the cost of the new state
         new_state = random_switch(b, state)
-        cable_connection_algorithm(new_state, s.cables)
+        cable_connection_v1(new_state, s.cables)
         new_cost = s.cost_shared(new_state)
 
         # check if new state is better
@@ -105,7 +106,7 @@ def hillclimber(s, N, state, b):
             for i in range(5):
                 b[i] = new_batteries[i]
 
-    cables = cable_connection_algorithm(state, s.cables)
+    cables = cable_connection_v1(state, s.cables)
     quick_plot(state, s.cables)
 
     return state, climb, iteration, succes
@@ -127,7 +128,7 @@ if __name__ == '__main__':
     
     # hillclimb
     for i in range(1):
-        N = 50000
+        N = 5000
         b_or = b.copy()
         peak_state, cost_climb, iteration, succes = hillclimber(s, N, state, b_or)
         print(min(cost_climb))
