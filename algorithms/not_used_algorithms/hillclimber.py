@@ -1,8 +1,4 @@
 from main import Smartgrid
-from random_state_generator import random_state_generator
-from random_solution import make_solution
-from cable_connection_algorithm_v5 import cable_connection_v1
-
 from numpy import random
 import copy
 
@@ -78,7 +74,7 @@ def random_switch(b, state):
     return state_copy
 
 
-def hillclimber(s, N, state, b):
+def hillclimber(s, N, state, b, algo):
     """A hillclimber that makes small changes to the state and saves the best one.
 
     Pre:
@@ -98,13 +94,16 @@ def hillclimber(s, N, state, b):
     iteration = []
  
     # Set start point of the climb
-    cable_connection_v1(state, s.cables)
+    algo(state, s.cables)
     cost = s.cost_shared(state)
     climb.append(cost)
     iteration.append(0)
 
     # Make small changes
     succes = 0
+    
+    j = 0
+    
     for i in range(N):
 
         # Prints every 1000 interations that the hillclimber is still going
@@ -121,7 +120,7 @@ def hillclimber(s, N, state, b):
 
         # Make new state and calculate the cost of the new state
         new_state = random_switch(b, state)
-        cable_connection_v1(new_state, s.cables)
+        algo(new_state, s.cables)
         new_cost = s.cost_shared(new_state)
 
         # check if new state is better (lower cost)
@@ -137,8 +136,9 @@ def hillclimber(s, N, state, b):
 
             for i in range(5):
                 b[i] = new_batteries[i]
+        j += 1
 
-    return state, climb, iteration, succes
+    return state, climb, j, succes
 
 
 

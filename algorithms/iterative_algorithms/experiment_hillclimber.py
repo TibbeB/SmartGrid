@@ -135,8 +135,9 @@ def hillclimber(smartgrid, valid_state, battery, cable_connection_algorithm,
 
             for i in range(5):
                 battery[i] = new_batteries[i]
-        
-        print(f"hillclimber | cable connection algo: {cable_connection_algorithm_name} | run: {j} | successes: {succes}")
+                
+        if j % 100 == 0:
+            print(f"hillclimber | cable connection algo: {cable_connection_algorithm_name} | run: {j} | successes: {succes}")
         j += 1
     return valid_state, climb, j, succes
 
