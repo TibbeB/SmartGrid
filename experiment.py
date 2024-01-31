@@ -104,7 +104,7 @@ def json_writer(valid_state: dict[object, list[object]],list_entry1: list[Any], 
         # append battery entry to data
         data.append(entry)     
     
-    string = ""
+    string = "experiment_results/"
     
     # write json file containing "data"
     for j in range(len(list_entry1_names)):
@@ -200,7 +200,7 @@ def experiment(district: str, max_time: int, N: int) -> None:
             index_list.append(sum_costs.index(min(sum_costs)))
             
         for index, index_min_cost in enumerate(index_list):
-            json_writer(valid_states[index][index_min_cost], [iterations_list[index][index_min_cost], succes_list[index][index_min_cost], cost_shared_list[index][index_min_cost],district, max_time, names[index]], ["iterations", "succes", "cost-shared", "district", "time", "cable-connection-algorithm-name"], cables_states[index][index_min_cost])
+            json_writer(valid_states[index][index_min_cost], [iterations_list[index][index_min_cost], succes_list[index][index_min_cost], cost_shared_list[index][index_min_cost],district, max_time, names[index], item], ["iterations", "succes", "cost-shared", "district", "time", "cable-connection-algorithm-name", "initial_state"], cables_states[index][index_min_cost])
             
         # print avg results in terminal
         print(f"AVERAGE RESULTS | hillclimber: {item}")
@@ -208,7 +208,7 @@ def experiment(district: str, max_time: int, N: int) -> None:
         
         for j in range(len(algos)):
 
-            print(f"algo: {names[j]} | time: {max_time} | district: {district} | avg cost: {sum(cost_shared_list[j])/len(cost_shared_list[j])} | avg iterations: {sum(iterations_list[j])/len(iterations_list[j])} | avg successes: {sum(succes_list[j])/len(succes_list[j])}")
+            print(f"algo: {names[j]} | time: {max_time}s | district: {district} | avg cost: {sum(cost_shared_list[j])/len(cost_shared_list[j])} | avg iterations: {sum(iterations_list[j])/len(iterations_list[j])} | avg successes: {sum(succes_list[j])/len(succes_list[j])}")
 
         # print avg results in terimnal
         print(f"MINIMUM RESULTS | hillclimber: {item}")
@@ -216,7 +216,7 @@ def experiment(district: str, max_time: int, N: int) -> None:
         
         for x in range(len(algos)):
 
-            print(f"algo: {names[x]} | time: {max_time} | district: {district} | avg cost: {cost_shared_list[x][index_list[x]]} | avg iterations: {iterations_list[x][index_list[x]]} | avg successes: {succes_list[x][index_list[x]]}")
+            print(f"algo: {names[x]} | time: {max_time}s | district: {district} | avg cost: {cost_shared_list[x][index_list[x]]} | avg iterations: {iterations_list[x][index_list[x]]} | avg successes: {succes_list[x][index_list[x]]}")
     
     
 def experiment_iterations(district: str, n: int, N: int):
@@ -309,7 +309,7 @@ def experiment_iterations(district: str, n: int, N: int):
             index_list.append(sum_costs.index(min(sum_costs)))
             
         for index, index_min_cost in enumerate(index_list):
-            json_writer(valid_states[index][index_min_cost], [iterations_list[index][index_min_cost], succes_list[index][index_min_cost], cost_shared_list[index][index_min_cost],district, names[index]], ["iterations", "succes", "cost-shared", "district", "cable-connection-algorithm-name"], cables_states[index][index_min_cost])
+            json_writer(valid_states[index][index_min_cost], [iterations_list[index][index_min_cost], succes_list[index][index_min_cost], cost_shared_list[index][index_min_cost],district, names[index], item], ["iterations", "succes", "cost-shared", "district", "cable-connection-algorithm-name", "initial_state"], cables_states[index][index_min_cost])
             
         # print avg results in terimnal
         print("AVERAGE RESULTS")
