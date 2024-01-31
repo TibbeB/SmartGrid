@@ -1,6 +1,6 @@
 # SmartGrid
 
-Veel huizen hebben zonnepanelen. Soms produceren deze meer dan ze gebruiken. Om dit overschot op te vangen moeten er batterijen aan gelegd worden. Deze worden dan via een grid (kabels) verbonden met de huizen. Daarnaast hebben batterijen hebben een maximale hoeveelheid stroom die ze kunnen opvangen. Dit creeert de nodigheid voor meerdere batterijen. Het probleem is nu dat het aanleggen van kabels en batterijen geld kosten. Dit creert de noodzaak voor de creatie van een zo'n efficient mogelijk grid, en dat is wat wij gaan proberen te doen.
+Veel huizen hebben zonnepanelen. Soms produceren deze meer dan ze gebruiken. Om dit overschot op te vangen moeten er batterijen aan gelegd worden. Deze worden via een grid (kabels) verbonden met de huizen. Daarnaast hebben batterijen hebben een maximale hoeveelheid stroom die ze kunnen opvangen. Dit creëert de nodigheid voor meerdere batterijen. Nu is het probleeem dat het aanleggen van kabels en batterijen geld kost. Dit maakt de noodzaak voor de creatie van een zo'n efficient mogelijk grid, en dat is wat wij gaan proberen te doen.
 
 ## Experiment
 
