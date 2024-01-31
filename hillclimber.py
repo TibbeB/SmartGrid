@@ -166,7 +166,6 @@ if __name__ == '__main__':
 
     # Plot the hillclimb
     plt.plot(iteration, cost_climb)
-    plt.savefig("hillclimb.png")
     plt.show()
 
     

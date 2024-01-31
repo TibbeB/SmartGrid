@@ -128,5 +128,4 @@ if __name__ == '__main__':
     # Visualisation
     print(min(cost_climb))
     plt.plot(iteration, cost_climb)
-    plt.savefig("simulated_annealing.png")
     plt.show()
