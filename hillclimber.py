@@ -89,14 +89,14 @@ def hillclimber(s, N, state, b):
     Pre:
         s (Smartgrid): Smartgrid class
         N (int): Number of times the hillclimber switches two houses
-        state (dict[object: list[object]]): The distribution of houses over the batteries
-        b (dict[int: object]): list of the battery objects
+        state (dict[object: List[object]]): The distribution of houses over the batteries
+        b (dict[int: object]): List of the battery objects
 
     Post:
         state (dict[object: list[object]]): The distribution of houses over the batteries
-        climb (list[int]): list of the costs of all the states generated in the hillclimber
-        iteration (list[int]): list of corresponding iteration to to costs in climb
-        succes (int): number of switches that resulted in a better state (lower cost)
+        climb (list[int]): List of the costs of all the states generated in the hillclimber
+        iteration (list[int]): List of corresponding iteration to to costs in climb
+        succes (int): Number of switches that resulted in a better state (lower cost)
     """        
     # make lists to store data
     climb = []

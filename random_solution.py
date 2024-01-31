@@ -5,11 +5,11 @@ import numpy as np
 
 def heuraka(occupied_c, capacities):
     """Checks if the batteries capacities aren't exceeded
-    Args:
+    Pre:
         occupied_c (list[float]): List of the occupied capacity of the batteries
         capacities (list[int]): List of the capacity of the batteries.
 
-    Returns:
+    Post:
         bool: True when all the occupied capacities are below the capacity.
     """    
     for i in range(len(capacities)):
@@ -22,12 +22,12 @@ def make_solution(b, state):
     """Converts a random distrubution of houses into a solution,
     where the batteries capcities aren't exceeded.
 
-    Args:
+    Pre:
         b (dict[int: object]): List of the battery objects
         state (dict[object: list[object]]): The distribution of houses over the batteries
 
 
-    Returns:
+    Post:
         state (dict[object: list[object]]): A solution where the constraint is met
     """    
 
@@ -145,6 +145,7 @@ def make_solution(b, state):
             battery_2.occupied_capacity += diff
 
     return state
+
 
 if __name__ == "__main__":
     # generate state and make a solution from it
