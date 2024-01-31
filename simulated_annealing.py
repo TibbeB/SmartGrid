@@ -9,19 +9,45 @@ from numpy import random
 import math
 
 def prob(old, new, temp):
+    """calculates the probability 
+
+    Args:
+        old (int): Old cost
+        new (int): New cost
+        temp (int): Current temperature
+
+    Returns:
+        int: The probability
+    """    
     exponent = (old - new) / temp
     if exponent > 700: 
-        return 0
+        return 1.1
     else:
         return math.pow(2, exponent)
 
 
 def simulated_annealing(N, state, b, T, slope):
-    # make lists for to store data
+    """_summary_
+
+    Args:
+        N (int): Number of times the hillclimber switches two houses
+        state (dict[object: list[object]]): The distribution of houses over the batteries
+        b (dict[int: object]): List of the battery objects
+        T (int): Starting temperature
+        slope (int): 'slope' of the temperature function
+
+    Returns:
+        state (dict[object: list[object]]): The distribution of houses over the batteries
+        climb (list[int]): List of the costs of all the states generated in the hillclimber
+        iteration (list[int]): List of corresponding iteration to to costs in climb
+        
+    """    
+    # Make lists to store data
     climb = []
     iteration = []
     iteration_prob = []
     probs = []
+    ts = []
  
     # Set start point of the climb
     cable_connection_algorithm(state, s.cables)
@@ -29,30 +55,36 @@ def simulated_annealing(N, state, b, T, slope):
     climb.append(cost)
     iteration.append(0)
 
-    ts = []
+    # Set start temperature
     ts.append(T)
     temp = T
 
     # Make small changes
     for i in range(N):
-        print(i)
+
+        # Prints every 1000 interations that the hillclimber is still going
+        if i % 1000 == 0:
+            print(i)
+
+        # Add new cost to data
         climb.append(cost)
         iteration.append(i + 1)
 
-        # clear cables
+        # Clear recently layed cables
         for key, cable in s.cables.items():
             cable.clear_cable()
 
-        # calculate the cost of the new state
+        # Make new state and calculate the cost of the new state
         new_state = random_switch(b, state)
         cable_connection_algorithm(new_state, s.cables)
         new_cost = s.cost_shared(new_state)
 
-        if prob(cost, new_cost, temp) < 1:
+        # Keep track of the calculated probabilities for visualisation
+        if prob(cost, new_cost, temp) <= 1:
             probs.append(prob(cost, new_cost, temp))
             iteration_prob.append(i)
 
-        # accept new state based on prob()
+        # Accept new state based on prob()
         if random.random() < prob(cost, new_cost, temp):
             state = new_state
             cost = new_cost
@@ -64,13 +96,11 @@ def simulated_annealing(N, state, b, T, slope):
             for i in range(5):
                 b[i] = new_batteries[i]
 
-        # temp = T - (T / N) * i
+        # Calculate new temperature
         temp = T * slope**i
         ts.append(temp)
 
-    # cable_connection_algorithm(state, s.cables)
-    # s.visualisation(b, h)
-
+    # Visualisation of temperture function and calculated probabilities 
     plt.plot(iteration, ts)
     plt.show()
 
@@ -78,11 +108,10 @@ def simulated_annealing(N, state, b, T, slope):
     print(len(ts))
     plt.show()
 
-
     return state, climb, iteration
 
 if __name__ == '__main__':
-    # make state
+    # Make state
     state = 1
     while state == 1:
         s = Smartgrid("1")
@@ -96,7 +125,7 @@ if __name__ == '__main__':
     slope = 0.994
     peak_state, cost_climb, iteration = simulated_annealing(N, state, b, T, slope)
 
-    # print(iteration)
+    # Visualisation
     print(min(cost_climb))
     plt.plot(iteration, cost_climb)
     plt.savefig("simulated_annealing.png")
