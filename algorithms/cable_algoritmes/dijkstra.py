@@ -1,6 +1,6 @@
 import copy
 
-def dijkstra(state, cables, N):
+def dijkstra(state, cables):
     """
     connects cables via dijkstra method. it works by looking at N houses
     at the first iteration  per battery. than each following iteration looking at N houses again from the N old houses (reference points).
@@ -12,7 +12,9 @@ def dijkstra(state, cables, N):
     post:
     - cables are connected
     """
-
+    
+    N = 3
+    
     connections = copy.deepcopy(state)
     
     for battery, houses in connections.items():
@@ -162,8 +164,6 @@ def dijkstra(state, cables, N):
                     # remove house from houses and append to removed houses list
                     for k in closest_N_houses:
                         selected_houses.append([k[0], houses.pop(houses.index(k[1]))])
-                        
-                print(f"{len(selected_houses)}, battery: {battery.identification}")
                     
                 sorted_selected_houses = sorted(selected_houses, key=lambda x: x[0])    
                         

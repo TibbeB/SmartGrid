@@ -1,7 +1,7 @@
 import copy
 
-def single_line_cable_connection_algorithm(state, cable):
-     """
+def single_line_cable_connection_algorithm(state, cables):
+    """
     connects cables via dijkstra method. it works by looking at N houses
     at the first iteration  per battery. than each following iteration looking at N houses again from the N old houses (reference points).
     
