@@ -1,5 +1,3 @@
-from FFD import even_distribution, x_y_path
-
 from objects.battery import Battery
 from objects.house import House
 from objects.cable import Cable

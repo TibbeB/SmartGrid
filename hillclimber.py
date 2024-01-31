@@ -3,12 +3,7 @@ from random_state_generator import random_state_generator
 from random_solution import make_solution
 from cable_connection_algorithm_v5 import cable_connection_v1
 
-from quick_plotter import quick_plot
-from house_districts import house_districts, house_districts_optimization
-
-import matplotlib.pyplot as plt
 from numpy import random
-
 import copy
 
 
@@ -145,28 +140,7 @@ def hillclimber(s, N, state, b):
 
     return state, climb, iteration, succes
 
-if __name__ == '__main__':
-    # Make state from house_districts.py
-    s = Smartgrid("1")
-    b, h = s.get_data()
-    state = house_districts(b, h)
-    good_state = house_districts_optimization(s, state)
-    
-    # Hillclimb
-    for i in range(1):
-        N = 5000
-        b_or = b.copy()
-        peak_state, cost_climb, iteration, succes = hillclimber(s, N, state, b_or)
-        print(min(cost_climb))
-        print(succes)
 
-    # Plot the best found state
-    cables = cable_connection_v1(state, s.cables)
-    quick_plot(peak_state, s.cables)
-
-    # Plot the hillclimb
-    plt.plot(iteration, cost_climb)
-    plt.show()
 
     
 
