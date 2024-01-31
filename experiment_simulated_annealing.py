@@ -1,8 +1,9 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
-from random_solution import make_solution
 from cable_connection_algorithm import cable_connection_algorithm
 from hillclimber import random_switch
+import typing
+from typing import Callable, Dict, List, Tuple, Any
 
 import matplotlib.pyplot as plt
 from numpy import random
@@ -10,6 +11,16 @@ import math
 import time
 
 def prob(old, new, temp):
+    """calculates the probability 
+
+    Args:
+        old (int): Old cost
+        new (int): New cost
+        temp (int): Current temperature
+
+    Returns:
+        int: The probability
+    """  
     exponent = (old - new) / temp
     if exponent > 700: 
         return 0
@@ -17,7 +28,25 @@ def prob(old, new, temp):
         return math.pow(2, exponent)
 
 
-def simulated_annealing(max_time, state, b, T, slope, cable_connection_algorithm,s, cable_connection_algorithm_name):
+def simulated_annealing(max_time, state, b, T, slope, cable_connection_algorithm, s, cable_connection_algorithm_name):
+    """_summary_
+
+    Args:
+        max_rime (int): time hillclimber runs
+        state (dict[object: list[object]]): The distribution of houses over the batteries
+        b (dict[int: object]): List of the battery objects
+        T (int): Starting temperature
+        slope (int): 'slope' of the temperature function
+        cable_connection_algorithm (Callable[dict[object, list[object]]): cable connection fucntion
+        s (Smartgrid): smartgrid instance
+        cable_connection_algorithm_name (str): name of cable connection algo
+
+    Returns:
+        state (dict[object: list[object]]): The distribution of houses over the batteries
+        climb (list[int]): List of the costs of all the states generated in the hillclimber
+        iteration (list[int]): List of corresponding iteration to to costs in climb
+        
+    """ 
     # make lists for to store data
     climb = []
     iteration = []
@@ -81,22 +110,4 @@ def simulated_annealing(max_time, state, b, T, slope, cable_connection_algorithm
     return state, climb, j
 
 if __name__ == '__main__':
-    # make state
-    state = 1
-    while state == 1:
-        s = Smartgrid("1")
-        b, h = s.get_data()
-        random_state = random_state_generator(b, h)
-        state = make_solution(b, random_state)
-    
-    # simulated anneal
-    N = 1000
-    T = 40
-    slope = 0.994
-    peak_state, cost_climb, iteration = simulated_annealing(N, state, b, T, slope)
 
-    # print(iteration)
-    print(min(cost_climb))
-    plt.plot(iteration, cost_climb)
-    plt.savefig("simulated_annealing.png")
-    plt.show()

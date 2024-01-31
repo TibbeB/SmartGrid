@@ -3,7 +3,18 @@ from main import Smartgrid
 from random_state_generator import random_state_generator
 from random_solution import make_solution
 
-def dijkstra(state, cables, N):
+def dijkstra(state: dict[object,list[object]], cables: dict[int, object], N: int) -> None:
+    """
+    connects cables via dijkstra method. it works by looking at N houses
+    at the first iteration  per battery. than each following iteration looking at N houses again from the N old houses (reference points).
+    
+    pre:
+    - state (dict[object, list[object]]): dict that represents state
+    - cables (dict[int, object]): dict that represents cables
+    - N (int): represents at how many houses are looked at from each refrence point
+    post:
+    - cables are connected
+    """
 
     connections = copy.deepcopy(state)
     
@@ -218,7 +229,7 @@ if __name__ == "__main__":
             
         costs = smartgrid.cost_shared(solution_state)
         
-        smartgrid.json_writer(district, costs, solution_state)
+        smartgrid.visualisation(batteries, houses)
         print(costs)
         
     else:

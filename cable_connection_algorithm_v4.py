@@ -3,6 +3,7 @@ from random_state_generator import random_state_generator
 from random_solution import make_solution
 from quick_plotter import quick_plot
 from battery_distance import battery_distance
+from cable_connection_hillclimber import cable_connection_hillclimber
 import time
 import math
 import numpy as np
@@ -11,14 +12,24 @@ import numpy as np
 # removes some randomness
 
 
-def cable_connection_v1(connections, cables, R):
+def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+    """
+    algorithm that randomely connects cables without unique cables
+    pre:
+    - connections (dict[object, list[object]]): dict that represents state
+    - cables (dict[int, object]): dict that represents cables
+    post:
+    - cables are connected
+    """
     
+    # loop trough batteries
     for battery, houses in connections.items():
     
         cords_list = [[battery.x, battery.y]]
         
         houses_with_radius_score_list = []
         
+        # loop trough corresponding houses
         for house1 in houses:
             
             radius_score = 0
@@ -27,7 +38,7 @@ def cable_connection_v1(connections, cables, R):
             
                 distance = math.sqrt( abs(house1.x - house2.x) ** 2 + abs(house1.y -house2.y) ** 2)
                 
-                if distance < R:
+                if distance < 12:
                     radius_score += 1
                     
             houses_with_radius_score_list.append([house1,radius_score])
@@ -85,11 +96,12 @@ if __name__ == "__main__":
     start_time = time.time()
     
     def radius_experiment():
-        for r in np.arange(11,13,0.1):
+        R = 12
+        for r in np.arange(1):
         
             costs_list = []
             
-            for i in range(100):
+            for i in range(10000):
                 
                 district = "1"
 
@@ -97,19 +109,21 @@ if __name__ == "__main__":
                 
                 batteries, houses = smartgrid.get_data()
 
-                invalid_state = random_state_generator(batteries, houses)
+                invalid_state = battery_distance(batteries, houses)
                 
                 valid_state = make_solution(batteries, invalid_state)
                 
                 if valid_state != 1:
                     
-                    cable_connection_v1(valid_state, smartgrid.cables, r)
+                    cable_connection_v1(valid_state, smartgrid.cables, R)
+                    
+                    cable_connection_hillclimber(valid_state, smartgrid.cables, 1000)
                         
                     costs = smartgrid.cost_shared(valid_state)
                     
                     costs_list.append(costs)
                     
-            print(f"r = {r} - average cost = {sum(costs_list) / len(costs_list)}")
+            print(f"- {i} itterations | minimun cost = {min(costs_list)} | radius = {R} | average cost = {sum(costs_list) / len(costs_list)}")
             
     def plot():
     
@@ -127,17 +141,48 @@ if __name__ == "__main__":
             
             cable_connection_v1(valid_state, smartgrid.cables, 20)
             
+            cable_connection_hillclimber(valid_state, smartgrid.cables, 10000)
+            
             cost = smartgrid.cost_shared(valid_state)
             
-            print(cost)
+            print(f"cost = {cost}")
             
             quick_plot(valid_state, smartgrid.cables)
             
             
+
+    
+    def json():
+    
+        district = "1"
+
+        smartgrid = Smartgrid(district)
+        
+        batteries, houses = smartgrid.get_data()
+
+        invalid_state = battery_distance(batteries, houses)
+        
+        valid_state = make_solution(batteries, invalid_state)
+        
+        if valid_state != 1:
+            
+            cable_connection_v1(valid_state, smartgrid.cables, 20)
+            
+            cost = smartgrid.cost_shared(valid_state)
+            
+            print(f"cost = {cost}")
+            
+            smartgrid.json_writer(district, cost, valid_state)
+        
+        
+    #radius_experiment()
+    
     plot()
+    
+    #json()
     
     end_time = time.time()
 
     elapsed_time = end_time - start_time
 
-    print(f"Execution time: {elapsed_time} seconds")
+    print(f"- Execution time: {elapsed_time} seconds")

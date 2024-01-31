@@ -1,12 +1,25 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
+from random_solution import make_solution
+import time
 
-def cable_connection_algorithm(connections, cables):
+def cable_connection_algorithm(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+    """
+    algorithm that randomely connects cables without unique cables
+    pre:
+    - connections (dict[object, list[object]]): dict that represents state
+    - cables (dict[int, object]): dict that represents cables
+    post:
+    - cables are connected
+    """
+    
+    # loop trough batteries
     for batteries, houses in connections.items():
     
-        
+        # list for saving cords of paths
         cables_coordinates_list = []
         
+        # loop trough corresponding houses
         for house in houses:
         
             xh = house.x
@@ -67,7 +80,8 @@ def cable_connection_algorithm(connections, cables):
                         cable.down()
                         cables_coordinates_list.append((cable.x, cable.y))
                 continue
-                
+            
+            # else connect to battery
             if dx1 < 0:
                 while cable.x < xb:
                     cable.right()
@@ -91,26 +105,39 @@ def cable_connection_algorithm(connections, cables):
 
                 
 if __name__ == "__main__":
-    district = "1"
-    
-    cost_list = []
-    for i in range(1000):
-        smartgrid = Smartgrid(district)
 
-        b, h = smartgrid.get_data()
-        
-        connections = random_state_generator(b, h)
-        
-        cable_connection_algorithm(connections, smartgrid.cables)
-        
-        costs = smartgrid.cost_shared(connections)
-        
-        cost_list.append(costs) 
-        
-    average = sum(cost_list) / len(cost_list)
-   
-    print(average)
+    start_time = time.time()
     
+    costs_list = []
+    
+    for i in range(1000):
+    
+        district = "1"
+        
+        smartgrid = Smartgrid(district)
+        
+        b, h = smartgrid.get_data()
+            
+        invalid_state = random_state_generator(b, h)
+        
+        valid_state = make_solution(b, invalid_state)
+        
+        if valid_state != 1:
+        
+            cable_connection_algorithm(valid_state, smartgrid.cables)
+            
+            costs = smartgrid.cost_shared(valid_state)
+
+            costs_list.append(costs)
+            
+    print(sum(costs_list) / len(costs_list))
+    
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+
+    print(f"Execution time: {elapsed_time} seconds")
+
                     
                
                 

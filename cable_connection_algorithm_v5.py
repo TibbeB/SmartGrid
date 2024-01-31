@@ -1,13 +1,25 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
-from random_solution import make_solution
 from battery_distance import battery_distance
 from quick_plotter import quick_plot
 import time
 import random
 
 # v5 cables run to centers of busy areas
-def draw_cables(dx, dy, saved_x, saved_y, cords_list, cable):
+def draw_cables(dx: int, dy: int, saved_x: int, saved_y: int, cords_list: list[int, int], cable: dict[int, object]) -> None:
+    """
+    lays a path from (dx,dy) to (saved_x,saved_y) using manhattan distance
+    
+    pre:
+    - dx (int): begin x
+    - dy (int): begin y
+    - saved_x (int): end x
+    - saved_y (int): end y
+    - cords_list (list[int, int]): list of previously visited cords
+    - cable (dict[int, object]): cables dict
+    post:
+    - cables are drawn
+    """
 
     cords_list.append([cable.x, cable.y])
             
@@ -31,10 +43,20 @@ def draw_cables(dx, dy, saved_x, saved_y, cords_list, cable):
             cable.down()
             cords_list.append([cable.x, cable.y])
             
-def draw_closest_cables(cords_list, cables, house):
+def draw_closest_cables(cords_list: list[int, int], cables: dict[int, object], house: object):
+    """
+    use previously visited cords list to draw cable to nearest cable
+    
+    pre:
+    - cords_list (list[int, int]): list of previously visited cords
+    - cables (dict[int, object]): cables dict
+    - house (object): house object
 
+    """
+    
     init_absolute_distance = 9999
-            
+    
+    # find closest path
     for i in range(len(cords_list)):
         
         absolute_distance = abs(house.x - cords_list[i][0]) + abs(house.y - cords_list[i][1])
@@ -54,6 +76,7 @@ def draw_closest_cables(cords_list, cables, house):
     
     cords_list.append([cable.x, cable.y])
     
+    # lay cable
     if dx < 0:
         while cable.x < saved_x:
             cable.right()
@@ -74,7 +97,15 @@ def draw_closest_cables(cords_list, cables, house):
             cable.down()
             cords_list.append([cable.x, cable.y])
 
-def cable_connection_v1(connections, cables):
+def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+    """
+    algorithm that randomely connects cables without unique cables
+    pre:
+    - connections (dict[object, list[object]]): dict that represents state
+    - cables (dict[int, object]): dict that represents cables
+    post:
+    - cables are connected
+    """
 
     grid_cords = []
     
@@ -164,37 +195,37 @@ def cable_connection_v1(connections, cables):
                 
 if __name__ == "__main__":
     
-    start_time = time.time()
+    pass # start_time = time.time()
     
-    costs_list = []
+    # costs_list = []
     
-    for i in range(1):
+    # for i in range(1):
         
-        district = "1"
+        # district = "1"
 
-        smartgrid = Smartgrid(district)
+        # smartgrid = Smartgrid(district)
         
-        batteries, houses = smartgrid.get_data()
+        # batteries, houses = smartgrid.get_data()
 
-        invalid_state = battery_distance(batteries, houses)
+        # invalid_state = battery_distance(batteries, houses)
         
-        valid_state = make_solution(batteries, invalid_state)
+        # valid_state = make_solution(batteries, invalid_state)
         
-        if valid_state != 1:
+        # if valid_state != 1:
             
-            cable_connection_v1(valid_state, smartgrid.cables)
+            # cable_connection_v1(valid_state, smartgrid.cables)
                 
-            costs = smartgrid.cost_shared(valid_state)
+            # costs = smartgrid.cost_shared(valid_state)
             
-            costs_list.append(costs)
+            # costs_list.append(costs)
             
-            quick_plot(valid_state, smartgrid.cables)
+            # quick_plot(valid_state, smartgrid.cables)
             
-    if len(costs_list) != 0:        
-        print(f"minimun cost = {min(costs_list)} - average cost = {sum(costs_list) / len(costs_list)}")
+    # if len(costs_list) != 0:        
+        # print(f"minimun cost = {min(costs_list)} - average cost = {sum(costs_list) / len(costs_list)}")
     
-    end_time = time.time()
+    # end_time = time.time()
 
-    elapsed_time = end_time - start_time
+    # elapsed_time = end_time - start_time
 
-    print(f"Execution time: {elapsed_time} seconds")
+    # print(f"Execution time: {elapsed_time} seconds")

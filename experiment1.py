@@ -3,6 +3,9 @@ from random_state_generator import random_state_generator
 from random_solution import make_solution
 from experiment_hillclimber import hillclimber
 from experiment_simulated_annealing import simulated_annealing
+from house_districts import house_districts, house_districts_optimization
+from experiment import json_writer
+from typing import Callable, Dict, List, Tuple, Any
 
 from cable_connection_algorithm import cable_connection_algorithm as baseline
 from cable_connection_algorithm_v1 import cable_connection_v1 as v1
@@ -14,90 +17,81 @@ from cable_connection_algorithm_v5 import cable_connection_v1 as v5
 import time
 import json
 
-def instance(cable_connection_algorithm, cable_connection_algorithm_name, max_time, district, T, slope):
-
-    valid_state = 1
+def instance(smartgrid: Smartgrid, valid_state: dict[object, list[object]], battery: list[object], cable_connection_algorithm: Callable[dict[object, list[object]],
+    dict[int, object]], cable_connection_algorithm_name: str, max_time: int,
+    district: str, T: int, slope: int) -> tuple[dict[object, list[object]], int, int, int, dict[int, object]]:
+    """
+    Runs simulated annealing hillclimber for a certain time using a given cable connection algorithm.
     
-    while valid_state == 1:
+    pre:
+    - smartgrid (object): smartgrid instance
+    - valid_state (dict[object, list[object]]): the state
+    - battery (object): batteries list
+    - cable_connection_algorithm (Callable): cable connection algorithm.
+    - cable_connection_algorithm_name (str): name of the cable connection algorithm.
+    - max_time (int): runtime of hillclimber
+    - district (str): The district ("1", "2", or "3")
+    - T (int): temperature for simulated annealing
+    - slope (int): slope for simulated annealing
+    post:
+    - returns valid_state (int): state after optimization
+    - returns iteration (int): number of iterations
+    - returns min_climb (int): minimum climb value obtained
+    - returns cables (Dict[int, object]): resulting cables configuration
+    """
     
-        smartgrid = Smartgrid(district)
-        
-        battery, houses = smartgrid.get_data()
-        
-        invalid_state = random_state_generator(battery, houses)
-        
-        valid_state = make_solution(battery, invalid_state)
-    
-    valid_state, climb, iteration = simulated_annealing(max_time, valid_state, battery, T, slope, cable_connection_algorithm, smartgrid, cable_connection_algorithm_name)
+    # call simulated annealing
+    valid_state, climb, iteration = simulated_annealing(max_time, valid_state, battery,
+    T, slope, cable_connection_algorithm, smartgrid, cable_connection_algorithm_name)
     
     cables = smartgrid.cables
     
-    return valid_state, iteration, min(climb), district, max_time, cable_connection_algorithm_name, cables, T, slope
+    return valid_state, iteration, min(climb), cables
 
-
-def json_writer(valid_state, iteration, cost_shared, district, max_time, cable_connection_algorithm_name, cables, T, slope):
+def experiment(district: str, max_time: int, T: int, slope: int) -> None:
+    """
+    perform experiment by calling functions 'instance' and 'json_writer' with different cable connection algorithms
     
-    # create empty data list
-    data = []
-    
-    # first entry
-    entry1 = {"district": district, "cost-shared": cost_shared, "iterations": iteration
-    ,"time": max_time, "cable-connection-algorithm-name": cable_connection_algorithm_name, "T": T, "slope": slope}
-    
-    data.append(entry1)
-    
-    # loop to create remaining entries
-    for battery, houses in valid_state.items():
-    
-        # create battery entry
-        entry = {"location": f"{battery.x},{battery.y}", "capacity": battery.capacity,"houses": []}
-
-        # loop for filling "houses" key of current battery entry
-        for house in houses:
-
-            string_path_cords = []
-            
-            # turn path cords into string
-            for cords in cables[house.identification].path:
-                string = f"{cords[0]},{cords[1]}"
-                string_path_cords.append(string)
-            
-            # create house_entry
-            house_entry = {"location": f"{house.x, house.y}", "output": house.capacity, "cables": string_path_cords}
-            
-            # append hous_entry to "houses" key 
-            entry["houses"].append(house_entry)
-            
-        # append battery entry to data
-        data.append(entry)     
-    
-    # create json file containing "data"
-    with open(f'district{district}_{cable_connection_algorithm_name}_{cost_shared}$_{time}s.json', 'w') as json_file:
-        json.dump(data, json_file, indent=2)
-        
-    
-
-def experiment(max_time):
+    pre:
+    - district (str): The district ("1", "2", or "3")
+    - max_time (int): runtime of hillclimber
+    post:
+    - returns N json_files
+    - prints results in terminal
+    """
 
     algos = [baseline, v1, v2, v3, v4, v5]
     
     names = ["b ", "v1", "v2", "v3", "v4", "v5"]
     
-    district = "1"
-    
-    T = 40
-    
-    slope = 0.994
-    
     cost_shared_list = []
     
     iterations_list = []
     
+    valid_state = 1
+    
+    while valid_state == 1:
+        
+        # create smartgrid instance
+        smartgrid = Smartgrid(district)
+        
+        battery, houses = smartgrid.get_data()
+        
+        # create house districts
+        valid_state = house_districts(battery, houses)
+        
+        # optimalize house districts
+        valid_state = house_districts_optimization(smartgrid, valid_state)
+    
     for i in range(len(algos)):
     
-        valid_state, iteration, cost_shared, district, max_time, cable_connection_algorithm_name, cables, T, slope = instance(algos[i], names[i], max_time, district, T, slope)
+        valid_state, iteration, cost_shared, cables = instance(smartgrid, valid_state, battery, algos[i], names[i], max_time, district, T, slope)
         
-        json_writer(valid_state, iteration, cost_shared, district, max_time, cable_connection_algorithm_name, cables, T, slope)
+        entry1 = [iteration, cost_shared, district, max_time, names[i], T, slope]
+        
+        entry1_names = ["iterations","cost-shared", "district", "time", "cable-connection-algorithm-name", "T", "slope"]
+        
+        json_writer(valid_state, entry1, entry1_names, cables)
         
         cost_shared_list.append(cost_shared)
         
@@ -112,4 +106,4 @@ def experiment(max_time):
         print(f"algo: {names[j]} | time: {max_time} | district: {district} | min cost: {cost_shared_list[j]} | iterations: {iterations_list[j]}")
         
 if __name__ == "__main__":
-    experiment(100)
+    experiment("1", 1, 40, 0.994)

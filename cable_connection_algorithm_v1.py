@@ -1,15 +1,7 @@
 from main import Smartgrid
 from random_state_generator import random_state_generator
 from random_solution import make_solution
-from quick_plotter import quick_plot
-from battery_distance import battery_distance
-from cable_connection_hillclimber import cable_connection_hillclimber
 import time
-
-
-# v2 adds score to houses where score: sum of distances from other houses
-# the lower the score the better
-# introduces unique solution for each state since randomness is removed
 
 def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
     """
@@ -21,33 +13,21 @@ def cable_connection_v1(connections: dict[object, list[object]], cables: dict[in
     - cables are connected
     """
     
+    # loop trough batteries
     for battery, houses in connections.items():
     
         cords_list = [[battery.x, battery.y]]
         
-        houses_with_score_list = []
-        
-        # add scores to houses where score: sum of distances from other houses
-        for house1 in houses:
-            score = 0
+        # loop trough houses corresponding to batteries
+        for house in houses:
             
-            for house2 in houses:
-            
-                score += abs(house1.x - house2.x) + abs(house1.y - house2.y)
-                   
-            houses_with_score_list.append([house1,score])
-        
-        # so house that is closest to other houses is first in the list
-        houses_with_score_list = sorted(houses_with_score_list, key=lambda x: x[1])
-        
-        for house in houses_with_score_list:
             
             init_absolute_distance = 9999
             
             # find closest cable
             for i in range(len(cords_list)):
                 
-                absolute_distance = abs(house[0].x - cords_list[i][0]) + abs(house[0].y - cords_list[i][1])
+                absolute_distance = abs(house.x - cords_list[i][0]) + abs(house.y - cords_list[i][1])
                 
                 if absolute_distance < init_absolute_distance:
                     
@@ -57,10 +37,10 @@ def cable_connection_v1(connections: dict[object, list[object]], cables: dict[in
                     
                     saved_y = cords_list[i][1]
         
-            cable = cables[house[0].identification]
+            cable = cables[house.identification]
             
-            dx = house[0].x - saved_x
-            dy = house[0].y - saved_y
+            dx = house.x - saved_x
+            dy = house.y - saved_y
             
             cords_list.append([cable.x, cable.y])
             
@@ -91,33 +71,9 @@ if __name__ == "__main__":
     
     costs_list = []
     
-    def experiment():
-        for i in range(1000):
-            
-            district = "1"
-
-            smartgrid = Smartgrid(district)
-            
-            batteries, houses = smartgrid.get_data()
-
-            invalid_state = battery_distance(batteries, houses)
-            
-            valid_state = make_solution(batteries, invalid_state)
-            
-            if valid_state != 1:
-                
-                cable_connection_v1(valid_state, smartgrid.cables)
-                
-                cable_connection_hillclimber(valid_state, smartgrid.cables, 1000)
-                    
-                costs = smartgrid.cost_shared(valid_state)
-                
-                costs_list.append(costs)
-                
-        print(f"- {i} itterations | minimum cost = {min(costs_list)} | average cost = {sum(costs_list) / len(costs_list)}")
+    for i in range(1):
         
-    def plot():
-        district = "1"
+        district = "3"
 
         smartgrid = Smartgrid(district)
         
@@ -130,17 +86,16 @@ if __name__ == "__main__":
         if valid_state != 1:
             
             cable_connection_v1(valid_state, smartgrid.cables)
-            
+                
             costs = smartgrid.cost_shared(valid_state)
             
-            print(costs)
+            costs_list.append(costs)
             
-            quick_plot(valid_state, smartgrid.cables)
-    
-    experiment()
+    print(sum(costs_list) / len(costs_list))
     
     end_time = time.time()
 
     elapsed_time = end_time - start_time
 
-    print(f"- Execution time: {elapsed_time} seconds")
+    print(f"Execution time: {elapsed_time} seconds")
+        

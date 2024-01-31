@@ -9,7 +9,15 @@ import random
 # randomness is reintroduced
 # battery - house connections will be layed for houses below certain score S
 
-def cable_connection_v1(connections, cables):
+def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+    """
+    algorithm that randomely connects cables without unique cables
+    pre:
+    - connections (dict[object, list[object]]): dict that represents state
+    - cables (dict[int, object]): dict that represents cables
+    post:
+    - cables are connected
+    """
     
     for battery, houses in connections.items():
     
@@ -71,8 +79,6 @@ def cable_connection_v1(connections, cables):
                 houses_with_score_list.remove(house)
                 
                 counter += 1
-        
-        print(counter)
         
         if counter > 0:
             random.shuffle(houses_with_score_list)
