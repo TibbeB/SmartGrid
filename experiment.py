@@ -216,10 +216,10 @@ def experiment(district: str, max_time: int, N: int) -> None:
         
         for x in range(len(algos)):
 
-            print(f"algo: {names[x]} | time: {max_time}s | district: {district} | avg cost: {cost_shared_list[x][index_list[x]]} | avg iterations: {iterations_list[x][index_list[x]]} | avg successes: {succes_list[x][index_list[x]]}")
+            print(f"algo: {names[x]} | time: {max_time}s | district: {district} | min cost: {cost_shared_list[x][index_list[x]]} | iterations: {iterations_list[x][index_list[x]]} | successes: {succes_list[x][index_list[x]]}")
     
     
-def experiment_iterations(district: str, n: int, N: int):
+def experiment_iterations(district: str, N: int, n: int):
     """
     perform experiment by calling functions 'instance' and 'json_writer' with different cable connection algorithms
 
@@ -263,9 +263,6 @@ def experiment_iterations(district: str, n: int, N: int):
                 
                 battery, houses = smartgrid.get_data()
                 
-                # create house districts
-                valid_state = house_districts(battery, houses)
-                
                 if item == 1:
                     # create house districts
                     valid_state = house_districts(battery, houses)
@@ -284,9 +281,6 @@ def experiment_iterations(district: str, n: int, N: int):
                 if item == 1:
                     # optimalize house districts
                     valid_state = house_districts_optimization(algos[i], smartgrid, valid_state)
-            
-                # optimalize house districts
-                valid_state = house_districts_optimization(algos[i], smartgrid, valid_state)
                 
                 # call hillclimber
                 valid_state, climb, iteration, succes = hillclimber(smartgrid, N, valid_state, battery, algos[i])
@@ -328,5 +322,5 @@ def experiment_iterations(district: str, n: int, N: int):
             print(f"algo: {names[x]} | district: {district} | min cost: {cost_shared_list[x][index_list[x]]} | iterations: {iterations_list[x][index_list[x]]} | successes: {succes_list[x][index_list[x]]}")
             
 if __name__ == "__main__":
-    experiment("1", 1, 1)
-    #experiment_iterations("1", 1, 1)
+    experiment("2", 75, 4)
+   # experiment_iterations("2", 100, 4)
