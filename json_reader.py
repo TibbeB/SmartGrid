@@ -1,7 +1,7 @@
 import json
-from objects.battery import Battery
-from objects.house import House
-from objects.cable import Cable
+from algorithms.initial_state_algorithms.objects.battery import Battery
+from algorithms.initial_state_algorithms.objects.house import House
+from algorithms.initial_state_algorithms.objects.cable import Cable
 
 
 def json_reader(path: str) -> tuple[dict[object, list[object]], dict[int, object]]:

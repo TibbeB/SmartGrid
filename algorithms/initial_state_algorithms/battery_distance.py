@@ -1,7 +1,7 @@
 import random
 import math
 
-from objects.battery import Battery
+from algorithms.initial_state_algorithms.objects.battery import Battery
 
 
 def battery_distance(batteries: dict[int, object], houses: dict[int, object]) -> dict[object, list[object]]:

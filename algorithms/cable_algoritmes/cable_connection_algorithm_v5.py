@@ -1,7 +1,7 @@
 import random
 
 # v5 cables run to centers of busy areas
-def draw_cables(dx: int, dy: int, saved_x: int, saved_y: int, cords_list: list[int, int], cable: dict[int, object]) -> None:
+def draw_cables(dx, dy, saved_x, saved_y, cords_list, cable):
     """
     lays a path from (dx,dy) to (saved_x,saved_y) using manhattan distance
     
@@ -38,7 +38,7 @@ def draw_cables(dx: int, dy: int, saved_x: int, saved_y: int, cords_list: list[i
             cable.down()
             cords_list.append([cable.x, cable.y])
             
-def draw_closest_cables(cords_list: list[int, int], cables: dict[int, object], house: object):
+def draw_closest_cables(cords_list, cables, house):
     """
     use previously visited cords list to draw cable to nearest cable
     
@@ -92,7 +92,7 @@ def draw_closest_cables(cords_list: list[int, int], cables: dict[int, object], h
             cable.down()
             cords_list.append([cable.x, cable.y])
 
-def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+def cable_connection_v1(connections, cables):
     """
     algorithm that randomely connects cables without unique cables
     pre:

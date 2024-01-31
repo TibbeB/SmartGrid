@@ -1,6 +1,6 @@
 import copy
 
-def dijkstra(state: dict[object,list[object]], cables: dict[int, object], N: int) -> None:
+def dijkstra(state, cables, N):
     """
     connects cables via dijkstra method. it works by looking at N houses
     at the first iteration  per battery. than each following iteration looking at N houses again from the N old houses (reference points).

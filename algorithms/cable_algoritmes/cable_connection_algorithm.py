@@ -1,4 +1,4 @@
-def cable_connection_algorithm(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+def cable_connection_algorithm(connections, cables):
     """
     algorithm that randomely connects cables without unique cables
     pre:

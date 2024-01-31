@@ -1,21 +1,23 @@
 from main import Smartgrid
-from random_state_generator import random_state_generator
-from random_solution import make_solution
-from experiment_hillclimber import hillclimber
-from experiment_simulated_annealing import simulated_annealing
-from house_districts import house_districts, house_districts_optimization
+from algorithms.initial_state_algorithms.random_state_generator import random_state_generator
+from algorithms.initial_state_algorithms.random_solution import make_solution
+from algorithms.iterative_algorithms.experiment_hillclimber import hillclimber
+from algorithms.iterative_algorithms.experiment_simulated_annealing import simulated_annealing
+from algorithms.initial_state_algorithms.house_districts import house_districts, house_districts_optimization
 from experiment import json_writer
-from typing import Callable, Dict, List, Tuple, Any
 
-from cable_connection_algorithm import cable_connection_algorithm as baseline
-from cable_connection_algorithm_v1 import cable_connection_v1 as v1
-from cable_connection_algorithm_v2 import cable_connection_v1 as v2
-from cable_connection_algorithm_v3 import cable_connection_v1 as v3
-from cable_connection_algorithm_v4 import cable_connection_v1 as v4
-from cable_connection_algorithm_v5 import cable_connection_v1 as v5
+
+from algorithms.cable_algoritmes.cable_connection_algorithm import cable_connection_algorithm as baseline
+from algorithms.cable_algoritmes.cable_connection_algorithm_v1 import cable_connection_v1 as v1
+from algorithms.cable_algoritmes.cable_connection_algorithm_v2 import cable_connection_v1 as v2
+from algorithms.cable_algoritmes.cable_connection_algorithm_v3 import cable_connection_v1 as v3
+from algorithms.cable_algoritmes.cable_connection_algorithm_v4 import cable_connection_v1 as v4
+from algorithms.cable_algoritmes.cable_connection_algorithm_v5 import cable_connection_v1 as v5
 
 import time
 import json
+import typing
+from typing import Callable, Dict, List, Tuple, Any
 
 def instance(smartgrid: Smartgrid, valid_state: dict[object, list[object]], battery: list[object], cable_connection_algorithm: Callable[dict[object, list[object]],
     dict[int, object]], cable_connection_algorithm_name: str, max_time: int,

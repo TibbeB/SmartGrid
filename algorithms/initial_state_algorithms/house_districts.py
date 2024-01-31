@@ -1,5 +1,5 @@
 import math
-from objects.battery import Battery
+from algorithms.initial_state_algorithms.objects.battery import Battery
 from itertools import permutations
 from sklearn.cluster import KMeans
 from typing import Dict, List
@@ -9,7 +9,7 @@ def distance(point1, point2):
     return math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
     
 
-def house_districts(batteries: dict[int, object], houses: dict[int, object]) -> dict[object, list[object]]:
+def house_districts(batteries, houses):
     """
     Puts houses into districts and announces districts to batteries.
 
@@ -124,7 +124,7 @@ def house_districts(batteries: dict[int, object], houses: dict[int, object]) -> 
     return connections
             
 
-def house_districts_optimization(cable_algorithm, s, connections: dict) ->  dict[object, list[object]]:
+def house_districts_optimization(cable_algorithm, s, connections):
 
     # generate permutations of values (lists)
     values_permutations = permutations(connections.values())

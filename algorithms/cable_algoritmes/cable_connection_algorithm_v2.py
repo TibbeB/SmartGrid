@@ -2,7 +2,7 @@
 # the lower the score the better
 # introduces unique solution for each state since randomness is removed
 
-def cable_connection_v1(connections: dict[object, list[object]], cables: dict[int, object]) -> None:
+def cable_connection_v1(connections, cables):
     """
     algorithm that randomely connects cables without unique cables
     pre:
