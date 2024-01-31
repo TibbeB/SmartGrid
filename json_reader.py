@@ -2,7 +2,7 @@ import json
 from objects.battery import Battery
 from objects.house import House
 from objects.cable import Cable
-from quick_plotter import quick_plot
+
 
 def json_reader(path: str) -> tuple[dict[object, list[object]], dict[int, object]]:
     """
@@ -87,9 +87,3 @@ def json_reader(path: str) -> tuple[dict[object, list[object]], dict[int, object
                     house_id += 1
                     
     return connections, cables
-    
-if __name__ == "__main__":
-
-    connections, cables = json_reader("district2_v5_31075$_1s.json")
-    
-    quick_plot(connections, cables)
