@@ -1,4 +1,4 @@
-from experiment_hillclimber import random_switch
+from algorithms.iterative_algorithms.experiment_hillclimber import random_switch
 from numpy import random
 import math
 import time

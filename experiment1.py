@@ -19,9 +19,8 @@ import json
 import typing
 from typing import Callable, Dict, List, Tuple, Any
 
-def instance(smartgrid: Smartgrid, valid_state: dict[object, list[object]], battery: list[object], cable_connection_algorithm: Callable[dict[object, list[object]],
-    dict[int, object]], cable_connection_algorithm_name: str, max_time: int,
-    district: str, T: int, slope: int) -> tuple[dict[object, list[object]], int, int, int, dict[int, object]]:
+def instance(smartgrid, valid_state, battery, cable_connection_algorithm, cable_connection_algorithm_name, max_time,
+    district, T, slope):
     """
     Runs simulated annealing hillclimber for a certain time using a given cable connection algorithm.
     
