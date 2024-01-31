@@ -1,5 +1,4 @@
 from FFD import even_distribution, x_y_path
-from optimalization.hillclimb_not_random import hillclimb_random
 
 from objects.battery import Battery
 from objects.house import House
@@ -249,22 +248,6 @@ class Smartgrid():
         
         return self.batteries, self.houses
             
-if __name__ == "__main__":
-    district = "1"
-    smartgrid = Smartgrid(district)
-
-    # distributing the houses evenly over the batteries
-    batteries, houses = smartgrid.get_data()
-
-    # switch random houses
-    N = 0
-    peak_state, costs_list = hillclimb_random(smartgrid, batteries, houses, N)
-
-    print(costs_list)
-    
-    # generating json output file and plot solution
-    smartgrid.json_writer(district, costs_list[-1], peak_state)
-    smartgrid.visualisation(batteries, houses)
 
     
 

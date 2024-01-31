@@ -1,23 +1,14 @@
-import random
 import math
 from objects.battery import Battery
-from main import Smartgrid
 from itertools import permutations
 from cable_connection_algorithm_v5 import cable_connection_v1
-from quick_plotter import quick_plot
-
-import random
-import math
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
-import numpy as np
+from typing import Dict, List
 
 # Function to calculate distance between two points
 def distance(point1, point2):
     return math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
     
-from typing import Dict, List
-from sklearn.cluster import KMeans
 
 def house_districts(batteries: dict[int, object], houses: dict[int, object]) -> dict[object, list[object]]:
     """
@@ -160,22 +151,9 @@ def house_districts_optimization(s, connections: dict) ->  dict[object, list[obj
         # clear cables
         for key, cable in s.cables.items():
             cable.clear_cable()
-            
-    cables = cable_connection_v1(best_dict, s.cables)
-    quick_plot(best_dict, s.cables)
 
     return best_dict
             
-   
-
-if __name__ == "__main__":
-    # test code 
-    s = Smartgrid("1")
-    b, h = s.get_data()
-
-    connections = house_districts(b, h)
-    
-    house_districts_optimization(s, connections)
 
         
     

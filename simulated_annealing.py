@@ -11,12 +11,12 @@ import math
 def prob(old, new, temp):
     """calculates the probability 
 
-    Args:
+    Pre:
         old (int): Old cost
         new (int): New cost
         temp (int): Current temperature
 
-    Returns:
+    Post:
         int: The probability
     """    
     exponent = (old - new) / temp
@@ -29,14 +29,14 @@ def prob(old, new, temp):
 def simulated_annealing(N, state, b, T, slope):
     """_summary_
 
-    Args:
+    Pre:
         N (int): Number of times the hillclimber switches two houses
         state (dict[object: list[object]]): The distribution of houses over the batteries
         b (dict[int: object]): List of the battery objects
         T (int): Starting temperature
         slope (int): 'slope' of the temperature function
 
-    Returns:
+    Post:
         state (dict[object: list[object]]): The distribution of houses over the batteries
         climb (list[int]): List of the costs of all the states generated in the hillclimber
         iteration (list[int]): List of corresponding iteration to to costs in climb
